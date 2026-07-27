@@ -6,6 +6,7 @@ import com.jihyun.englishmate.entity.member.Member;
 import com.jihyun.englishmate.exception.member.DuplicateEmailException;
 import com.jihyun.englishmate.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 이메일 중복 여부를 확인한 뒤 신규 회원을 저장합니다.
@@ -28,7 +30,7 @@ public class MemberService {
 
         Member member = Member.createMember(
                 request.email(),
-                request.password(),
+                passwordEncoder.encode(request.password()),
                 request.nickname()
         );
 
