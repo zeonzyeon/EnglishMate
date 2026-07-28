@@ -70,9 +70,14 @@ public class WordExtractService {
 
         for (String token : content.split("\\s+")) {
             String cleanedText = WordNormalizer.clean(token);
-            String normalizedText = WordNormalizer.normalize(token);
 
-            if (isValidWord(normalizedText)) {
+            if (cleanedText.isBlank() || EnglishStopWords.contains(cleanedText)) {
+                continue;
+            }
+
+            String normalizedText = WordNormalizer.normalize(cleanedText);
+
+            if (isValidNormalizedWord(normalizedText)) {
                 wordFrequencies.compute(
                         normalizedText,
                         (key, existing) -> existing == null
@@ -85,11 +90,11 @@ public class WordExtractService {
         return wordFrequencies;
     }
 
-    private boolean isValidWord(String token) {
-        return token != null
-                && !token.isBlank()
-                && token.length() >= 2
-                && !EnglishStopWords.contains(token);
+    private boolean isValidNormalizedWord(String normalizedText) {
+        return normalizedText != null
+                && !normalizedText.isBlank()
+                && normalizedText.length() >= 2
+                && !EnglishStopWords.contains(normalizedText);
     }
 
     private Word findOrCreateWord(String text, String normalizedText) {

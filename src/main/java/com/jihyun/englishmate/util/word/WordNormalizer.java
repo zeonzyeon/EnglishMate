@@ -19,6 +19,7 @@ public final class WordNormalizer {
             Map.entry("geese", "goose"),
             Map.entry("went", "go"),
             Map.entry("gone", "go"),
+            Map.entry("does", "do"),
             Map.entry("did", "do"),
             Map.entry("done", "do"),
             Map.entry("had", "have"),
@@ -44,7 +45,12 @@ public final class WordNormalizer {
             "status",
             "process",
             "jealous",
-            "this"
+            "this",
+            "his",
+            "is",
+            "yes",
+            "us",
+            "as"
     );
 
     private static final Map<String, String> ING_RESTORE_WORDS = Map.of(
@@ -128,7 +134,7 @@ public final class WordNormalizer {
             return word.substring(0, word.length() - 2);
         }
 
-        if (word.endsWith("s") && word.length() > 3 && !word.endsWith("ss")) {
+        if (word.endsWith("s") && word.length() > 4 && !word.endsWith("ss")) {
             return word.substring(0, word.length() - 1);
         }
 

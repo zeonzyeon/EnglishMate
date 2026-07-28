@@ -88,6 +88,11 @@ class WordNormalizerTest {
         assertThat(WordNormalizer.normalize("process")).isEqualTo("process");
         assertThat(WordNormalizer.normalize("jealous")).isEqualTo("jealous");
         assertThat(WordNormalizer.normalize("this")).isEqualTo("this");
+        assertThat(WordNormalizer.normalize("his")).isEqualTo("his");
+        assertThat(WordNormalizer.normalize("is")).isEqualTo("is");
+        assertThat(WordNormalizer.normalize("yes")).isEqualTo("yes");
+        assertThat(WordNormalizer.normalize("us")).isEqualTo("us");
+        assertThat(WordNormalizer.normalize("as")).isEqualTo("as");
     }
 
     @Test
