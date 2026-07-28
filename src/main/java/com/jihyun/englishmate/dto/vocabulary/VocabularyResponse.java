@@ -1,6 +1,7 @@
 package com.jihyun.englishmate.dto.vocabulary;
 
 import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
+import com.jihyun.englishmate.util.word.PartOfSpeechLabels;
 
 /**
  * 개인 단어장 목록 화면에 사용할 응답 DTO입니다.
@@ -23,5 +24,9 @@ public record VocabularyResponse(
                 vocabulary.getWord().getMeaning(),
                 vocabulary.getWord().getPartOfSpeech()
         );
+    }
+
+    public String partOfSpeechLabel() {
+        return PartOfSpeechLabels.labelOf(partOfSpeech);
     }
 }

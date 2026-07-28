@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class WordExtractServiceTest {
 
-    private final WordExtractService wordExtractService = new WordExtractService(null, null, null);
+    private final WordExtractService wordExtractService = new WordExtractService(null, null, null, null);
 
     @Test
     @DisplayName("정규화 전 불용어는 저장 대상에서 제외한다")

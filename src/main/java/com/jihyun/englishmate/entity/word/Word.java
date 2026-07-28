@@ -52,6 +52,14 @@ public class Word {
         return new Word(text, normalizedText);
     }
 
+    /**
+     * 단어의 의미와 품사만 수정합니다.
+     */
+    public void updateMeaningAndPartOfSpeech(String meaning, String partOfSpeech) {
+        this.meaning = meaning;
+        this.partOfSpeech = partOfSpeech;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

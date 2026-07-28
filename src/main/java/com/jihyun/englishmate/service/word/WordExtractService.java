@@ -6,6 +6,7 @@ import com.jihyun.englishmate.entity.material.StudyMaterial;
 import com.jihyun.englishmate.entity.word.MaterialWord;
 import com.jihyun.englishmate.entity.word.Word;
 import com.jihyun.englishmate.repository.material.StudyMaterialRepository;
+import com.jihyun.englishmate.repository.vocabulary.VocabularyRepository;
 import com.jihyun.englishmate.repository.word.MaterialWordRepository;
 import com.jihyun.englishmate.repository.word.WordRepository;
 import com.jihyun.englishmate.util.word.EnglishStopWords;
@@ -29,6 +30,7 @@ public class WordExtractService {
     private final StudyMaterialRepository studyMaterialRepository;
     private final WordRepository wordRepository;
     private final MaterialWordRepository materialWordRepository;
+    private final VocabularyRepository vocabularyRepository;
 
     /**
      * 본인 소유의 학습 지문에서 단어를 추출하고 저장합니다.
@@ -101,7 +103,10 @@ public class WordExtractService {
 
         return materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterialId)
                 .stream()
-                .map(ExtractedWordResponse::from)
+                .map(materialWord -> ExtractedWordResponse.from(
+                        materialWord,
+                        vocabularyRepository.existsByMemberIdAndWordId(memberId, materialWord.getWord().getId())
+                ))
                 .toList();
     }
 
