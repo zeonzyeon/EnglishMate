@@ -66,14 +66,10 @@
     <section class="card border-0 shadow-sm">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h2 class="h5 mb-1">추출 단어 목록</h2>
-                    <p class="text-secondary mb-0">
-                        현재 이 지문에서 추출된 단어
-                        <strong th:text="${extractedWordCount}">0</strong>개
-                    </p>
-                    <p class="text-secondary mb-0">기본형을 기준으로 확인하고 원하는 단어만 개인 단어장에 추가하세요.</p>
-                </div>
+                <h2 class="h5 mb-0">추출 단어 목록</h2>
+                <span class="badge text-bg-light border fs-6">
+                    <span th:text="${extractedWordCount}">0</span>개
+                </span>
             </div>
 
             <div th:if="${#lists.isEmpty(extractedWords)}" class="text-center text-secondary py-4">

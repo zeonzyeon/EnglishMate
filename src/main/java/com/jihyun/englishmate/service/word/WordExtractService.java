@@ -44,19 +44,38 @@ public class WordExtractService {
                 .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
 
         Map<String, ExtractedWord> wordFrequencies = extractWords(studyMaterial.getContent());
-        int savedWordCount = 0;
-
+        Map<Long, ExtractedWord> extractedWordByWordId = new LinkedHashMap<>();
         for (ExtractedWord extractedWord : wordFrequencies.values()) {
             Word word = findOrCreateWord(extractedWord.text(), extractedWord.normalizedText());
+            extractedWordByWordId.put(word.getId(), extractedWord);
+        }
 
-            if (materialWordRepository.existsByStudyMaterialIdAndWordId(studyMaterial.getId(), word.getId())) {
+        List<MaterialWord> existingMaterialWords =
+                materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterial.getId());
+        Map<Long, MaterialWord> existingMaterialWordByWordId = existingMaterialWords.stream()
+                .collect(Collectors.toMap(materialWord -> materialWord.getWord().getId(), Function.identity()));
+
+        int savedWordCount = 0;
+
+        for (MaterialWord materialWord : existingMaterialWords) {
+            if (!extractedWordByWordId.containsKey(materialWord.getWord().getId())) {
+                materialWordRepository.delete(materialWord);
+            }
+        }
+
+        for (Map.Entry<Long, ExtractedWord> entry : extractedWordByWordId.entrySet()) {
+            MaterialWord existingMaterialWord = existingMaterialWordByWordId.get(entry.getKey());
+            if (existingMaterialWord != null) {
+                existingMaterialWord.updateFrequency(entry.getValue().frequency());
                 continue;
             }
 
+            Word word = wordRepository.findById(entry.getKey())
+                    .orElseThrow(() -> new EntityNotFoundException("단어를 찾을 수 없습니다."));
             MaterialWord materialWord = MaterialWord.createMaterialWord(
                     studyMaterial,
                     word,
-                    extractedWord.frequency()
+                    entry.getValue().frequency()
             );
             materialWordRepository.save(materialWord);
             savedWordCount++;

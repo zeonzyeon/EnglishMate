@@ -68,6 +68,13 @@ public class MaterialWord {
         return new MaterialWord(studyMaterial, word, frequency);
     }
 
+    /**
+     * 재추출 시 현재 본문 기준의 단어 빈도로 갱신합니다.
+     */
+    public void updateFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
