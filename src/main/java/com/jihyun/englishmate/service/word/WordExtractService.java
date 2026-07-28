@@ -8,6 +8,7 @@ import com.jihyun.englishmate.repository.material.StudyMaterialRepository;
 import com.jihyun.englishmate.repository.word.MaterialWordRepository;
 import com.jihyun.englishmate.repository.word.WordRepository;
 import com.jihyun.englishmate.util.word.EnglishStopWords;
+import com.jihyun.englishmate.util.word.WordNormalizer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,17 +36,21 @@ public class WordExtractService {
         StudyMaterial studyMaterial = studyMaterialRepository.findByIdAndMemberId(studyMaterialId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
 
-        Map<String, Integer> wordFrequencies = extractWords(studyMaterial.getContent());
+        Map<String, ExtractedWord> wordFrequencies = extractWords(studyMaterial.getContent());
         int savedWordCount = 0;
 
-        for (Map.Entry<String, Integer> entry : wordFrequencies.entrySet()) {
-            Word word = findOrCreateWord(entry.getKey());
+        for (ExtractedWord extractedWord : wordFrequencies.values()) {
+            Word word = findOrCreateWord(extractedWord.text(), extractedWord.normalizedText());
 
             if (materialWordRepository.existsByStudyMaterialIdAndWordId(studyMaterial.getId(), word.getId())) {
                 continue;
             }
 
-            MaterialWord materialWord = MaterialWord.createMaterialWord(studyMaterial, word, entry.getValue());
+            MaterialWord materialWord = MaterialWord.createMaterialWord(
+                    studyMaterial,
+                    word,
+                    extractedWord.frequency()
+            );
             materialWordRepository.save(materialWord);
             savedWordCount++;
         }
@@ -56,19 +61,24 @@ public class WordExtractService {
     /**
      * 문자열에서 조건에 맞는 고유 영어 단어와 빈도를 추출합니다.
      */
-    public Map<String, Integer> extractWords(String content) {
-        Map<String, Integer> wordFrequencies = new LinkedHashMap<>();
+    public Map<String, ExtractedWord> extractWords(String content) {
+        Map<String, ExtractedWord> wordFrequencies = new LinkedHashMap<>();
 
         if (content == null || content.isBlank()) {
             return wordFrequencies;
         }
 
-        String normalizedContent = content.toLowerCase()
-                .replaceAll("[^a-z\\s]", " ");
+        for (String token : content.split("\\s+")) {
+            String cleanedText = WordNormalizer.clean(token);
+            String normalizedText = WordNormalizer.normalize(token);
 
-        for (String token : normalizedContent.split("\\s+")) {
-            if (isValidWord(token)) {
-                wordFrequencies.merge(token, 1, Integer::sum);
+            if (isValidWord(normalizedText)) {
+                wordFrequencies.compute(
+                        normalizedText,
+                        (key, existing) -> existing == null
+                                ? new ExtractedWord(cleanedText, normalizedText, 1)
+                                : existing.increaseFrequency()
+                );
             }
         }
 
@@ -82,8 +92,22 @@ public class WordExtractService {
                 && !EnglishStopWords.contains(token);
     }
 
-    private Word findOrCreateWord(String normalizedText) {
+    private Word findOrCreateWord(String text, String normalizedText) {
         return wordRepository.findByNormalizedText(normalizedText)
-                .orElseGet(() -> wordRepository.save(Word.createWord(normalizedText)));
+                .orElseGet(() -> wordRepository.save(Word.createWord(text, normalizedText)));
+    }
+
+    /**
+     * 같은 normalizedText로 묶인 최초 추출 단어와 빈도를 보관합니다.
+     */
+    public record ExtractedWord(
+            String text,
+            String normalizedText,
+            int frequency
+    ) {
+
+        public ExtractedWord increaseFrequency() {
+            return new ExtractedWord(text, normalizedText, frequency + 1);
+        }
     }
 }

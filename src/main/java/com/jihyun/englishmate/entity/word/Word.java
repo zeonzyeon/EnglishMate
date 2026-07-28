@@ -48,8 +48,8 @@ public class Word {
     /**
      * 정규화된 단어를 기준으로 Word를 생성합니다.
      */
-    public static Word createWord(String normalizedText) {
-        return new Word(normalizedText, normalizedText);
+    public static Word createWord(String text, String normalizedText) {
+        return new Word(text, normalizedText);
     }
 
     @PrePersist

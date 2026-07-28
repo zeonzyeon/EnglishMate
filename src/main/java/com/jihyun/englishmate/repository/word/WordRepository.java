@@ -10,4 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface WordRepository extends JpaRepository<Word, Long> {
 
     Optional<Word> findByNormalizedText(String normalizedText);
+
+    boolean existsByNormalizedText(String normalizedText);
 }
