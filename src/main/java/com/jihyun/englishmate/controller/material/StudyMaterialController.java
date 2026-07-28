@@ -3,8 +3,10 @@ package com.jihyun.englishmate.controller.material;
 import com.jihyun.englishmate.dto.material.StudyMaterialCreateRequest;
 import com.jihyun.englishmate.dto.material.StudyMaterialResponse;
 import com.jihyun.englishmate.dto.material.StudyMaterialUpdateRequest;
+import com.jihyun.englishmate.dto.word.WordExtractResult;
 import com.jihyun.englishmate.security.member.CustomUserDetails;
 import com.jihyun.englishmate.service.material.StudyMaterialService;
+import com.jihyun.englishmate.service.word.WordExtractService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class StudyMaterialController {
 
     private final StudyMaterialService studyMaterialService;
+    private final WordExtractService wordExtractService;
 
     /**
      * 로그인한 회원의 학습 지문 목록을 조회합니다.
@@ -136,5 +139,20 @@ public class StudyMaterialController {
         studyMaterialService.delete(userDetails.getMemberId(), id);
         redirectAttributes.addFlashAttribute("message", "학습 자료가 삭제되었습니다.");
         return "redirect:/materials";
+    }
+
+    /**
+     * 학습 지문에서 단어를 추출하고 저장합니다.
+     */
+    @PostMapping("/{id}/extract")
+    public String extractWords(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+        WordExtractResult result = wordExtractService.extractAndSave(userDetails.getMemberId(), id);
+        redirectAttributes.addFlashAttribute("extractResult", result);
+        redirectAttributes.addFlashAttribute("message", "단어 추출이 완료되었습니다.");
+        return "redirect:/materials/" + id;
     }
 }

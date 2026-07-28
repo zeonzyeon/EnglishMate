@@ -7,6 +7,7 @@ import com.jihyun.englishmate.entity.material.StudyMaterial;
 import com.jihyun.englishmate.entity.member.Member;
 import com.jihyun.englishmate.repository.material.StudyMaterialRepository;
 import com.jihyun.englishmate.repository.member.MemberRepository;
+import com.jihyun.englishmate.service.word.WordExtractService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class StudyMaterialService {
 
     private final StudyMaterialRepository studyMaterialRepository;
     private final MemberRepository memberRepository;
+    private final WordExtractService wordExtractService;
 
     /**
      * 로그인한 회원의 학습 지문을 등록합니다.
@@ -31,7 +33,9 @@ public class StudyMaterialService {
     public Long create(Long memberId, StudyMaterialCreateRequest request) {
         Member member = findMember(memberId);
         StudyMaterial material = StudyMaterial.createStudyMaterial(member, request.title(), request.content());
-        return studyMaterialRepository.save(material).getId();
+        Long materialId = studyMaterialRepository.save(material).getId();
+        wordExtractService.extractAndSave(memberId, materialId);
+        return materialId;
     }
 
     /**
