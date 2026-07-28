@@ -3,6 +3,7 @@ package com.jihyun.englishmate.controller.material;
 import com.jihyun.englishmate.dto.material.StudyMaterialCreateRequest;
 import com.jihyun.englishmate.dto.material.StudyMaterialResponse;
 import com.jihyun.englishmate.dto.material.StudyMaterialUpdateRequest;
+import com.jihyun.englishmate.dto.word.ExtractedWordResponse;
 import com.jihyun.englishmate.dto.word.WordExtractResult;
 import com.jihyun.englishmate.security.member.CustomUserDetails;
 import com.jihyun.englishmate.service.material.StudyMaterialService;
@@ -84,7 +85,9 @@ public class StudyMaterialController {
             Model model
     ) {
         StudyMaterialResponse material = studyMaterialService.findById(userDetails.getMemberId(), id);
+        List<ExtractedWordResponse> extractedWords = wordExtractService.findExtractedWords(userDetails.getMemberId(), id);
         model.addAttribute("material", material);
+        model.addAttribute("extractedWords", extractedWords);
         return "materials/detail";
     }
 

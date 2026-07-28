@@ -1,6 +1,7 @@
 package com.jihyun.englishmate.service.word;
 
 import com.jihyun.englishmate.dto.word.WordExtractResult;
+import com.jihyun.englishmate.dto.word.ExtractedWordResponse;
 import com.jihyun.englishmate.entity.material.StudyMaterial;
 import com.jihyun.englishmate.entity.word.MaterialWord;
 import com.jihyun.englishmate.entity.word.Word;
@@ -11,6 +12,7 @@ import com.jihyun.englishmate.util.word.EnglishStopWords;
 import com.jihyun.englishmate.util.word.WordNormalizer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -88,6 +90,19 @@ public class WordExtractService {
         }
 
         return wordFrequencies;
+    }
+
+    /**
+     * 본인 소유의 학습 지문에서 추출된 단어 목록을 조회합니다.
+     */
+    public List<ExtractedWordResponse> findExtractedWords(Long memberId, Long studyMaterialId) {
+        studyMaterialRepository.findByIdAndMemberId(studyMaterialId, memberId)
+                .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
+
+        return materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterialId)
+                .stream()
+                .map(ExtractedWordResponse::from)
+                .toList();
     }
 
     private boolean isValidNormalizedWord(String normalizedText) {

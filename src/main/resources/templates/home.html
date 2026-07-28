@@ -19,7 +19,7 @@
         <div id="homeNavbar" class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link active" th:href="@{/}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">My Vocabulary</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vocabulary}">My Vocabulary</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/materials}">Study Materials</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Quiz</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Review</a></li>
@@ -70,7 +70,7 @@
                     </a>
                 </div>
                 <div class="col-12 col-md-6 col-xl-3">
-                    <a href="#" class="quick-card">
+                    <a th:href="@{/vocabulary}" class="quick-card">
                         <span class="quick-card-number">02</span>
                         <h3>Vocabulary</h3>
                         <p>Manage your personal vocabulary.</p>
