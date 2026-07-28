@@ -23,6 +23,7 @@
             <h1 class="h3 mb-1">My Vocabulary</h1>
             <p class="text-secondary mb-0">저장한 개인 단어를 기본형 기준 알파벳순으로 확인하세요.</p>
         </div>
+        <a th:href="@{/vocabulary/new}" class="btn btn-primary">단어 등록</a>
     </div>
 
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
@@ -59,7 +60,7 @@
                             <div class="d-flex justify-content-end gap-2 flex-nowrap">
                                 <a th:href="@{/words/{id}/edit(id=${vocabulary.wordId()}, redirectUrl=${'/vocabulary'})}"
                                    class="btn btn-outline-secondary btn-sm"
-                                   style="width: 86px;">의미 수정</a>
+                                   style="width: 86px; white-space: nowrap;">의미 수정</a>
                                 <form th:action="@{/vocabulary/{id}/delete(id=${vocabulary.id()})}"
                                       method="post"
                                       onsubmit="return confirm('단어장에서 삭제하시겠습니까?');">

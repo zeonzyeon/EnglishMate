@@ -1,5 +1,6 @@
 package com.jihyun.englishmate.service.vocabulary;
 
+import com.jihyun.englishmate.dto.vocabulary.VocabularyCreateRequest;
 import com.jihyun.englishmate.dto.vocabulary.VocabularyResponse;
 import com.jihyun.englishmate.entity.member.Member;
 import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
@@ -7,6 +8,8 @@ import com.jihyun.englishmate.entity.word.Word;
 import com.jihyun.englishmate.repository.member.MemberRepository;
 import com.jihyun.englishmate.repository.vocabulary.VocabularyRepository;
 import com.jihyun.englishmate.repository.word.WordRepository;
+import com.jihyun.englishmate.util.word.EnglishStopWords;
+import com.jihyun.englishmate.util.word.WordNormalizer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +53,38 @@ public class VocabularyService {
                 .orElseThrow(() -> new EntityNotFoundException("단어를 찾을 수 없습니다."));
 
         Vocabulary vocabulary = Vocabulary.createVocabulary(member, word);
+        vocabularyRepository.save(vocabulary);
+        return true;
+    }
+
+    /**
+     * 사용자가 직접 입력한 단어를 정규화한 뒤 개인 단어장에 저장합니다.
+     */
+    @Transactional
+    public boolean create(Long memberId, VocabularyCreateRequest request) {
+        String cleanedText = WordNormalizer.clean(request.text());
+        if (cleanedText.isBlank() || EnglishStopWords.contains(cleanedText)) {
+            throw new IllegalArgumentException("등록할 수 있는 영어 단어를 입력해주세요.");
+        }
+
+        String normalizedText = WordNormalizer.normalize(cleanedText);
+        if (normalizedText.isBlank()
+                || normalizedText.length() < 2
+                || EnglishStopWords.contains(normalizedText)) {
+            throw new IllegalArgumentException("등록할 수 있는 영어 단어를 입력해주세요.");
+        }
+
+        Word word = wordRepository.findByNormalizedText(normalizedText)
+                .orElseGet(() -> wordRepository.save(Word.createWord(cleanedText, normalizedText)));
+
+        if (vocabularyRepository.existsByMemberIdAndWordId(memberId, word.getId())) {
+            return false;
+        }
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
+        Vocabulary vocabulary = Vocabulary.createVocabulary(member, word);
+        vocabulary.updateMeaningAndPartOfSpeech(request.meaning(), request.partOfSpeech());
         vocabularyRepository.save(vocabulary);
         return true;
     }
