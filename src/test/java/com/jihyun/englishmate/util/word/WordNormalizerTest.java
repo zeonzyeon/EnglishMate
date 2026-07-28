@@ -12,6 +12,13 @@ class WordNormalizerTest {
     void normalizeRegularPlural() {
         assertThat(WordNormalizer.normalize("apples")).isEqualTo("apple");
         assertThat(WordNormalizer.normalize("books")).isEqualTo("book");
+        assertThat(WordNormalizer.normalize("pets")).isEqualTo("pets");
+    }
+
+    @Test
+    @DisplayName("비교급은 확실하지 않으면 변환하지 않는다")
+    void keepComparativeWords() {
+        assertThat(WordNormalizer.normalize("smarter")).isEqualTo("smarter");
     }
 
     @Test

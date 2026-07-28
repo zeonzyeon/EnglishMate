@@ -21,7 +21,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-1">My Vocabulary</h1>
-            <p class="text-secondary mb-0">저장한 개인 단어를 알파벳순으로 확인하세요.</p>
+            <p class="text-secondary mb-0">저장한 개인 단어를 기본형 기준 알파벳순으로 확인하세요.</p>
         </div>
     </div>
 
@@ -38,7 +38,8 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                     <tr>
-                        <th>단어</th>
+                        <th>기본형</th>
+                        <th>추출 단어</th>
                         <th>의미</th>
                         <th>품사</th>
                         <th class="text-end">삭제</th>
@@ -46,10 +47,8 @@
                     </thead>
                     <tbody>
                     <tr th:each="vocabulary : ${vocabularies}">
-                        <td>
-                            <span class="fw-semibold" th:text="${vocabulary.text()}">word</span>
-                            <span class="text-secondary small ms-2" th:text="${vocabulary.normalizedText()}">base</span>
-                        </td>
+                        <td class="fw-semibold" th:text="${vocabulary.normalizedText()}">base</td>
+                        <td class="text-secondary" th:text="${vocabulary.text()}">word</td>
                         <td th:text="${vocabulary.meaning() ?: '-'}">-</td>
                         <td th:text="${vocabulary.partOfSpeech() ?: '-'}">-</td>
                         <td class="text-end">
