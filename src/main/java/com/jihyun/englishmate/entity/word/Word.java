@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 여러 학습 자료와 단어장에서 재사용할 수 있는 단어 마스터 엔티티입니다.
+ * 여러 학습 자료와 단어장에서 재사용되는 공통 단어 마스터 엔티티입니다.
  */
 @Entity
 @Table(name = "words")
@@ -31,12 +31,6 @@ public class Word {
     @Column(nullable = false, unique = true, length = 100)
     private String normalizedText;
 
-    @Column(length = 255)
-    private String meaning;
-
-    @Column(length = 50)
-    private String partOfSpeech;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -50,14 +44,6 @@ public class Word {
      */
     public static Word createWord(String text, String normalizedText) {
         return new Word(text, normalizedText);
-    }
-
-    /**
-     * 단어의 의미와 품사만 수정합니다.
-     */
-    public void updateMeaningAndPartOfSpeech(String meaning, String partOfSpeech) {
-        this.meaning = meaning;
-        this.partOfSpeech = partOfSpeech;
     }
 
     @PrePersist

@@ -21,8 +21,8 @@ public record VocabularyResponse(
                 vocabulary.getWord().getId(),
                 vocabulary.getWord().getText(),
                 vocabulary.getWord().getNormalizedText(),
-                vocabulary.getWord().getMeaning(),
-                vocabulary.getWord().getPartOfSpeech()
+                vocabulary.getMeaning(),
+                vocabulary.getPartOfSpeech()
         );
     }
 

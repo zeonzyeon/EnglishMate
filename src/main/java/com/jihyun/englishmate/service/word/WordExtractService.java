@@ -3,6 +3,7 @@ package com.jihyun.englishmate.service.word;
 import com.jihyun.englishmate.dto.word.WordExtractResult;
 import com.jihyun.englishmate.dto.word.ExtractedWordResponse;
 import com.jihyun.englishmate.entity.material.StudyMaterial;
+import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
 import com.jihyun.englishmate.entity.word.MaterialWord;
 import com.jihyun.englishmate.entity.word.Word;
 import com.jihyun.englishmate.repository.material.StudyMaterialRepository;
@@ -15,6 +16,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,11 +104,22 @@ public class WordExtractService {
         studyMaterialRepository.findByIdAndMemberId(studyMaterialId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
 
-        return materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterialId)
+        List<MaterialWord> materialWords = materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterialId);
+        List<Long> wordIds = materialWords.stream()
+                .map(materialWord -> materialWord.getWord().getId())
+                .toList();
+        if (wordIds.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, Vocabulary> vocabularyByWordId = vocabularyRepository.findAllByMemberIdAndWordIdIn(memberId, wordIds)
                 .stream()
+                .collect(Collectors.toMap(vocabulary -> vocabulary.getWord().getId(), Function.identity()));
+
+        return materialWords.stream()
                 .map(materialWord -> ExtractedWordResponse.from(
                         materialWord,
-                        vocabularyRepository.existsByMemberIdAndWordId(memberId, materialWord.getWord().getId())
+                        vocabularyByWordId.get(materialWord.getWord().getId())
                 ))
                 .toList();
     }

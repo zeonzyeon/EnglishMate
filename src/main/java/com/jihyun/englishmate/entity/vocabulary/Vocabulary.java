@@ -57,6 +57,12 @@ public class Vocabulary {
     @Column(nullable = false)
     private int correctCount;
 
+    @Column(length = 255)
+    private String meaning;
+
+    @Column(length = 50)
+    private String partOfSpeech;
+
     private LocalDateTime lastStudiedAt;
 
     @Column(nullable = false, updatable = false)
@@ -78,6 +84,14 @@ public class Vocabulary {
      */
     public static Vocabulary createVocabulary(Member member, Word word) {
         return new Vocabulary(member, word);
+    }
+
+    /**
+     * 회원이 개인 단어장에 기록한 의미와 품사를 수정합니다.
+     */
+    public void updateMeaningAndPartOfSpeech(String meaning, String partOfSpeech) {
+        this.meaning = meaning;
+        this.partOfSpeech = partOfSpeech;
     }
 
     @PrePersist

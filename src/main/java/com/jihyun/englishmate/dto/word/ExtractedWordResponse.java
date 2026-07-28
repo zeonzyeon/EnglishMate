@@ -1,6 +1,7 @@
 package com.jihyun.englishmate.dto.word;
 
 import com.jihyun.englishmate.entity.word.MaterialWord;
+import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
 import com.jihyun.englishmate.util.word.PartOfSpeechLabels;
 
 /**
@@ -16,13 +17,15 @@ public record ExtractedWordResponse(
         boolean savedInVocabulary
 ) {
 
-    public static ExtractedWordResponse from(MaterialWord materialWord, boolean savedInVocabulary) {
+    public static ExtractedWordResponse from(MaterialWord materialWord, Vocabulary vocabulary) {
+        boolean savedInVocabulary = vocabulary != null;
+
         return new ExtractedWordResponse(
                 materialWord.getWord().getId(),
                 materialWord.getWord().getText(),
                 materialWord.getWord().getNormalizedText(),
-                materialWord.getWord().getMeaning(),
-                materialWord.getWord().getPartOfSpeech(),
+                savedInVocabulary ? vocabulary.getMeaning() : null,
+                savedInVocabulary ? vocabulary.getPartOfSpeech() : null,
                 materialWord.getFrequency(),
                 savedInVocabulary
         );

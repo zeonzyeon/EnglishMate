@@ -88,6 +88,7 @@ public class StudyMaterialController {
         List<ExtractedWordResponse> extractedWords = wordExtractService.findExtractedWords(userDetails.getMemberId(), id);
         model.addAttribute("material", material);
         model.addAttribute("extractedWords", extractedWords);
+        model.addAttribute("extractedWordCount", extractedWords.size());
         return "materials/detail";
     }
 
