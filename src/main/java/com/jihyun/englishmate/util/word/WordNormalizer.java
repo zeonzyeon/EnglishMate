@@ -50,7 +50,8 @@ public final class WordNormalizer {
             "is",
             "yes",
             "us",
-            "as"
+            "as",
+            "teacher"
     );
 
     private static final Map<String, String> ING_RESTORE_WORDS = Map.of(
@@ -130,11 +131,15 @@ public final class WordNormalizer {
             return word.substring(0, word.length() - 2);
         }
 
+        if (word.endsWith("er") && word.length() > 5) {
+            return normalizeComparative(word.substring(0, word.length() - 2));
+        }
+
         if (word.endsWith("es") && shouldRemoveEs(word)) {
             return word.substring(0, word.length() - 2);
         }
 
-        if (word.endsWith("s") && word.length() > 4 && !word.endsWith("ss")) {
+        if (word.endsWith("s") && word.length() > 3 && !word.endsWith("ss")) {
             return word.substring(0, word.length() - 1);
         }
 
@@ -147,6 +152,14 @@ public final class WordNormalizer {
             return restored;
         }
 
+        if (hasTrailingDoubleConsonant(stem)) {
+            return stem.substring(0, stem.length() - 1);
+        }
+
+        return stem;
+    }
+
+    private static String normalizeComparative(String stem) {
         if (hasTrailingDoubleConsonant(stem)) {
             return stem.substring(0, stem.length() - 1);
         }
