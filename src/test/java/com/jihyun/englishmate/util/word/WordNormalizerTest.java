@@ -100,13 +100,18 @@ class WordNormalizerTest {
         assertThat(WordNormalizer.normalize("yes")).isEqualTo("yes");
         assertThat(WordNormalizer.normalize("us")).isEqualTo("us");
         assertThat(WordNormalizer.normalize("as")).isEqualTo("as");
-        assertThat(WordNormalizer.normalize("teacher")).isEqualTo("teacher");
     }
 
     @Test
     @DisplayName("소유격은 제거한다")
     void removePossessive() {
         assertThat(WordNormalizer.normalize("teacher's")).isEqualTo("teacher");
+    }
+
+    @Test
+    @DisplayName("er로 끝나는 일반 명사는 비교급으로 처리하지 않는다")
+    void keepErEndingNouns() {
+        assertThat(WordNormalizer.normalize("teacher")).isEqualTo("teacher");
     }
 
     @Test
