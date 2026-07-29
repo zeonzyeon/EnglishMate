@@ -22,7 +22,7 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/vocabulary}">My Vocabulary</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/materials}">Study Materials</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/quiz}">Quiz</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Review</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/review}">Review</a></li>
             </ul>
 
             <div class="d-flex align-items-lg-center gap-3 flex-column flex-lg-row">
@@ -84,7 +84,7 @@
                     </a>
                 </div>
                 <div class="col-12 col-md-6 col-xl-3">
-                    <a href="#" class="quick-card">
+                    <a th:href="@{/review}" class="quick-card">
                         <span class="quick-card-number">04</span>
                         <h3>Review</h3>
                         <p>Review difficult words.</p>

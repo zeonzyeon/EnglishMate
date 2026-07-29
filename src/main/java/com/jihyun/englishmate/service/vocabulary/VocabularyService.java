@@ -8,6 +8,7 @@ import com.jihyun.englishmate.entity.member.Member;
 import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
 import com.jihyun.englishmate.entity.word.Word;
 import com.jihyun.englishmate.repository.member.MemberRepository;
+import com.jihyun.englishmate.repository.review.LearningProgressRepository;
 import com.jihyun.englishmate.repository.vocabulary.VocabularyRepository;
 import com.jihyun.englishmate.repository.word.MaterialWordRepository;
 import com.jihyun.englishmate.repository.word.WordRepository;
@@ -34,6 +35,7 @@ public class VocabularyService {
     private final MemberRepository memberRepository;
     private final WordRepository wordRepository;
     private final MaterialWordRepository materialWordRepository;
+    private final LearningProgressRepository learningProgressRepository;
 
     /**
      * 로그인한 회원의 단어장만 알파벳순으로 조회합니다.
@@ -129,6 +131,7 @@ public class VocabularyService {
     public void delete(Long memberId, Long vocabularyId) {
         Vocabulary vocabulary = vocabularyRepository.findByIdAndMemberId(vocabularyId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("단어장 항목을 찾을 수 없습니다."));
+        learningProgressRepository.deleteByVocabularyId(vocabulary.getId());
         vocabularyRepository.delete(vocabulary);
     }
 }
