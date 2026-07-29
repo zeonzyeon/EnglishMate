@@ -2,16 +2,22 @@ package com.jihyun.englishmate.service.vocabulary;
 
 import com.jihyun.englishmate.dto.vocabulary.VocabularyCreateRequest;
 import com.jihyun.englishmate.dto.vocabulary.VocabularyResponse;
+import com.jihyun.englishmate.dto.vocabulary.VocabularySourceResponse;
+import com.jihyun.englishmate.dto.vocabulary.VocabularySourceRow;
 import com.jihyun.englishmate.entity.member.Member;
 import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
 import com.jihyun.englishmate.entity.word.Word;
 import com.jihyun.englishmate.repository.member.MemberRepository;
 import com.jihyun.englishmate.repository.vocabulary.VocabularyRepository;
+import com.jihyun.englishmate.repository.word.MaterialWordRepository;
 import com.jihyun.englishmate.repository.word.WordRepository;
 import com.jihyun.englishmate.util.word.EnglishStopWords;
 import com.jihyun.englishmate.util.word.WordNormalizer;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +33,42 @@ public class VocabularyService {
     private final VocabularyRepository vocabularyRepository;
     private final MemberRepository memberRepository;
     private final WordRepository wordRepository;
+    private final MaterialWordRepository materialWordRepository;
 
     /**
      * 로그인한 회원의 단어장만 알파벳순으로 조회합니다.
      */
     public List<VocabularyResponse> findAllByMember(Long memberId) {
-        return vocabularyRepository.findAllByMemberIdOrderByWord(memberId)
-                .stream()
-                .map(VocabularyResponse::from)
+        List<Vocabulary> vocabularies = vocabularyRepository.findAllByMemberIdOrderByWord(memberId);
+        Map<Long, List<VocabularySourceResponse>> sourcesByWordId = findSourcesByWordId(memberId, vocabularies);
+
+        return vocabularies.stream()
+                .map(vocabulary -> VocabularyResponse.from(
+                        vocabulary,
+                        sourcesByWordId.getOrDefault(vocabulary.getWord().getId(), List.of())
+                ))
                 .toList();
+    }
+
+    private Map<Long, List<VocabularySourceResponse>> findSourcesByWordId(
+            Long memberId,
+            List<Vocabulary> vocabularies
+    ) {
+        List<Long> wordIds = vocabularies.stream()
+                .map(vocabulary -> vocabulary.getWord().getId())
+                .distinct()
+                .toList();
+        if (wordIds.isEmpty()) {
+            return Map.of();
+        }
+
+        List<VocabularySourceRow> sourceRows = materialWordRepository.findVocabularySourceRows(memberId, wordIds);
+        return sourceRows.stream()
+                .collect(Collectors.groupingBy(
+                        VocabularySourceRow::wordId,
+                        LinkedHashMap::new,
+                        Collectors.mapping(VocabularySourceRow::toSourceResponse, Collectors.toList())
+                ));
     }
 
     /**

@@ -10,6 +10,7 @@ import com.jihyun.englishmate.repository.member.MemberRepository;
 import com.jihyun.englishmate.service.word.WordExtractService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +62,12 @@ public class StudyMaterialService {
     @Transactional
     public void update(Long memberId, Long materialId, StudyMaterialUpdateRequest request) {
         StudyMaterial material = findOwnedMaterial(memberId, materialId);
+        boolean contentChanged = !Objects.equals(material.getContent(), request.content());
         material.update(request.title(), request.content());
+
+        if (contentChanged) {
+            wordExtractService.reextractMaterialWords(material);
+        }
     }
 
     /**

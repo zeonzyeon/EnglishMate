@@ -43,6 +43,7 @@
                         <th>추출 단어</th>
                         <th>의미</th>
                         <th>품사</th>
+                        <th style="min-width: 220px;">출처</th>
                         <th class="text-end" style="width: 180px;">관리</th>
                     </tr>
                     </thead>
@@ -55,6 +56,17 @@
                         </td>
                         <td th:text="${vocabulary.partOfSpeechLabel()}">
                             -
+                        </td>
+                        <td>
+                            <span th:if="${#lists.isEmpty(vocabulary.sourceMaterials())}"
+                                  class="text-secondary">현재 연결된 지문 없음</span>
+                            <span th:unless="${#lists.isEmpty(vocabulary.sourceMaterials())}"
+                                  class="d-flex flex-wrap gap-1">
+                                <a th:each="source : ${vocabulary.sourceMaterials()}"
+                                   th:href="@{/materials/{id}(id=${source.studyMaterialId()})}"
+                                   class="badge text-bg-light border text-decoration-none"
+                                   th:text="${source.title()}">출처</a>
+                            </span>
                         </td>
                         <td class="text-end">
                             <div class="d-flex justify-content-end gap-2 flex-nowrap">

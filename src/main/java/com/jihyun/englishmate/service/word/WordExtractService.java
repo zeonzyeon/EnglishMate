@@ -85,6 +85,31 @@ public class WordExtractService {
     }
 
     /**
+     * 수정된 본문 기준으로 학습 자료의 단어 연결을 모두 다시 생성합니다.
+     * 기존 Word와 Vocabulary는 유지하고 MaterialWord 연결만 갱신합니다.
+     */
+    @Transactional
+    public WordExtractResult reextractMaterialWords(StudyMaterial studyMaterial) {
+        Map<String, ExtractedWord> wordFrequencies = extractWords(studyMaterial.getContent());
+
+        materialWordRepository.deleteAllByStudyMaterialId(studyMaterial.getId());
+
+        int savedWordCount = 0;
+        for (ExtractedWord extractedWord : wordFrequencies.values()) {
+            Word word = findOrCreateWord(extractedWord.text(), extractedWord.normalizedText());
+            MaterialWord materialWord = MaterialWord.createMaterialWord(
+                    studyMaterial,
+                    word,
+                    extractedWord.frequency()
+            );
+            materialWordRepository.save(materialWord);
+            savedWordCount++;
+        }
+
+        return new WordExtractResult(wordFrequencies.size(), savedWordCount);
+    }
+
+    /**
      * 문자열에서 조건에 맞는 고유 영어 단어와 빈도를 추출합니다.
      */
     public Map<String, ExtractedWord> extractWords(String content) {

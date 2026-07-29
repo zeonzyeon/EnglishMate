@@ -21,7 +21,7 @@
         <div class="col-12 col-lg-8">
             <div class="mb-4">
                 <h1 class="h3 mb-1" th:text="${mode == 'edit'} ? '학습 자료 수정' : '학습 자료 등록'">학습 자료 등록</h1>
-                <p class="text-secondary mb-0">영어 지문을 입력하면 이후 단어 추출과 퀴즈 생성에 활용됩니다.</p>
+                <p class="text-secondary mb-0">영어 지문을 입력하면 단어 추출과 퀴즈 생성에 사용됩니다.</p>
             </div>
 
             <div class="card border-0 shadow-sm">
@@ -29,6 +29,7 @@
                     <form th:action="${mode == 'edit'} ? @{/materials/{id}(id=${materialId})} : @{/materials}"
                           th:object="${form}"
                           method="post"
+                          th:attr="onsubmit=${mode == 'edit'} ? 'return confirmMaterialUpdate();' : null"
                           novalidate>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
@@ -67,5 +68,14 @@
         </div>
     </div>
 </main>
+
+<script>
+    function confirmMaterialUpdate() {
+        return confirm(
+            '지문을 수정하면 기존에 추출된 단어 목록이 삭제되고, 변경된 지문을 기준으로 단어가 다시 추출됩니다. ' +
+            '개인 단어장에 저장한 단어와 입력한 뜻·품사는 유지됩니다. 수정하시겠습니까?'
+        );
+    }
+</script>
 </body>
 </html>
