@@ -32,16 +32,50 @@
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-4">
                     <h2 class="h5 mb-3">퀴즈 유형</h2>
-                    <div class="vstack gap-2">
-                        <label th:each="type : ${quizTypes}" class="border rounded p-3 bg-white">
-                            <input type="radio"
-                                   th:field="*{quizType}"
-                                   th:value="${type.value()}"
-                                   class="form-check-input me-2">
-                            <span class="fw-semibold" th:text="${type.label()}">유형</span>
-                        </label>
+
+                    <div class="border rounded p-3 bg-white mb-3">
+                        <div class="fw-semibold mb-2">객관식</div>
+                        <div class="vstack gap-2 ps-3">
+                            <label class="form-check mb-0">
+                                <input type="radio"
+                                       th:field="*{quizType}"
+                                       value="WORD_TO_MEANING_MULTIPLE_CHOICE"
+                                       class="form-check-input">
+                                <span class="form-check-label">의미 맞추기</span>
+                            </label>
+                            <label class="form-check mb-0">
+                                <input type="radio"
+                                       th:field="*{quizType}"
+                                       value="MEANING_TO_WORD_MULTIPLE_CHOICE"
+                                       class="form-check-input">
+                                <span class="form-check-label">단어 맞추기</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="text-danger small mt-2" th:if="${#fields.hasErrors('quizType')}" th:errors="*{quizType}"></div>
+
+                    <div class="border rounded p-3 bg-white">
+                        <div class="fw-semibold mb-2">주관식</div>
+                        <div class="vstack gap-2 ps-3">
+                            <label class="form-check mb-0">
+                                <input type="radio"
+                                       th:field="*{quizType}"
+                                       value="WORD_TO_MEANING_WRITTEN"
+                                       class="form-check-input">
+                                <span class="form-check-label">의미 입력</span>
+                            </label>
+                            <label class="form-check mb-0">
+                                <input type="radio"
+                                       th:field="*{quizType}"
+                                       value="MEANING_TO_WORD_WRITTEN"
+                                       class="form-check-input">
+                                <span class="form-check-label">단어 입력</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="text-danger small mt-2"
+                         th:if="${#fields.hasErrors('quizType')}"
+                         th:errors="*{quizType}"></div>
                 </div>
             </div>
         </section>
@@ -95,22 +129,28 @@
 
     function updateSelectedCount() {
         if (selectAll.checked) {
-            selectedCount.textContent = String(materialCheckboxes.length);
             materialCheckboxes.forEach((checkbox) => {
-                checkbox.checked = false;
-                checkbox.disabled = true;
+                checkbox.checked = true;
+                checkbox.disabled = false;
             });
-            return;
+        } else {
+            materialCheckboxes.forEach((checkbox) => {
+                checkbox.disabled = false;
+                checkbox.checked = false;
+            });
         }
 
-        materialCheckboxes.forEach((checkbox) => {
-            checkbox.disabled = false;
-        });
         selectedCount.textContent = String(materialCheckboxes.filter((checkbox) => checkbox.checked).length);
     }
 
     selectAll.addEventListener('change', updateSelectedCount);
-    materialCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', updateSelectedCount));
+    materialCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener('change', () => {
+            const checkedCount = materialCheckboxes.filter((item) => item.checked).length;
+            selectAll.checked = checkedCount === materialCheckboxes.length;
+            selectedCount.textContent = String(materialCheckboxes.filter((item) => item.checked).length);
+        });
+    });
     updateSelectedCount();
 </script>
 </body>

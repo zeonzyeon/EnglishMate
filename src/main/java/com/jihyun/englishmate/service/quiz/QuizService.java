@@ -321,11 +321,11 @@ public class QuizService {
     }
 
     private String questionText(QuizType quizType, QuizWord quizWord) {
-        return quizType.isWordQuestion() ? quizWord.text() : quizWord.meaning();
+        return quizType.isWordQuestion() ? quizWord.normalizedText() : quizWord.meaning();
     }
 
     private String optionAnswer(QuizType quizType, QuizWord quizWord) {
-        return quizType.isWordQuestion() ? quizWord.meaning() : quizWord.text();
+        return quizType.isWordQuestion() ? quizWord.meaning() : quizWord.normalizedText();
     }
 
     private boolean grade(QuizType quizType, String submittedAnswer, String correctAnswer) {

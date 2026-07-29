@@ -117,11 +117,14 @@ public class QuizController {
                     questionOrder,
                     request
             );
-            redirectAttributes.addFlashAttribute("answer", answer);
+            if (answer.lastQuestion()) {
+                return "redirect:/quiz/attempts/" + attemptId + "/result";
+            }
+            return "redirect:/quiz/attempts/" + attemptId + "/questions/" + (questionOrder + 1);
         } catch (IllegalArgumentException | EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("warningMessage", e.getMessage());
+            return "redirect:/quiz/attempts/" + attemptId + "/questions/" + questionOrder;
         }
-        return "redirect:/quiz/attempts/" + attemptId + "/questions/" + questionOrder;
     }
 
     /**

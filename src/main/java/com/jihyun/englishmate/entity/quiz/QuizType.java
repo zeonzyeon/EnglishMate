@@ -5,10 +5,10 @@ package com.jihyun.englishmate.entity.quiz;
  */
 public enum QuizType {
 
-    WORD_TO_MEANING_MULTIPLE_CHOICE("영어 단어 → 뜻 고르기", true, true),
-    MEANING_TO_WORD_MULTIPLE_CHOICE("뜻 → 영어 단어 고르기", true, false),
-    WORD_TO_MEANING_WRITTEN("영어 단어 → 뜻 직접 입력", false, true),
-    MEANING_TO_WORD_WRITTEN("뜻 → 영어 단어 직접 입력", false, false);
+    WORD_TO_MEANING_MULTIPLE_CHOICE("객관식 - 의미 맞추기", true, true),
+    MEANING_TO_WORD_MULTIPLE_CHOICE("객관식 - 단어 맞추기", true, false),
+    WORD_TO_MEANING_WRITTEN("주관식 - 의미 입력", false, true),
+    MEANING_TO_WORD_WRITTEN("주관식 - 단어 입력", false, false);
 
     private final String label;
     private final boolean multipleChoice;
