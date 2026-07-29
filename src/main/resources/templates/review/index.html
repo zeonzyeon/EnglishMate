@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Review - EnglishMate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .review-bar-wrap {
+            height: 120px;
+        }
+
+        .review-bar {
+            width: 24px;
+            min-height: 2px;
+            transition: height 0.2s ease;
+        }
+    </style>
 </head>
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
@@ -21,6 +32,121 @@
     </div>
 
     <div th:if="${warningMessage}" class="alert alert-warning" th:text="${warningMessage}"></div>
+
+    <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <h2 class="h5 mb-1">최근 7일 복습 통계</h2>
+                    <p class="text-secondary mb-0">
+                        <span th:text="${#temporals.format(statistics.startDate(), 'yyyy.MM.dd')}">2026.07.23</span>
+                        ~
+                        <span th:text="${#temporals.format(statistics.endDate(), 'yyyy.MM.dd')}">2026.07.29</span>
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/review(endDate=${statistics.previousEndDate()})}"
+                       class="btn btn-outline-secondary btn-sm">이전 7일</a>
+                    <a th:href="@{/review}" class="btn btn-outline-primary btn-sm">오늘</a>
+                    <a th:if="${statistics.canMoveNext()}"
+                       th:href="@{/review(endDate=${statistics.nextEndDate()})}"
+                       class="btn btn-outline-secondary btn-sm">다음 7일</a>
+                    <button th:unless="${statistics.canMoveNext()}"
+                            type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            disabled>다음 7일</button>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-lg-2">
+                    <div class="border rounded bg-white p-3 h-100">
+                        <p class="text-secondary mb-1">총 복습</p>
+                        <strong class="h4" th:text="${statistics.summary().totalReviewCount()}">0</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="border rounded bg-white p-3 h-100">
+                        <p class="text-secondary mb-1">외웠어요</p>
+                        <strong class="h4 text-success" th:text="${statistics.summary().rememberedCount()}">0</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="border rounded bg-white p-3 h-100">
+                        <p class="text-secondary mb-1">다시 볼래요</p>
+                        <strong class="h4 text-danger" th:text="${statistics.summary().difficultCount()}">0</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="border rounded bg-white p-3 h-100">
+                        <p class="text-secondary mb-1">복습 단어</p>
+                        <strong class="h4" th:text="${statistics.summary().uniqueVocabularyCount()}">0</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="border rounded bg-white p-3 h-100">
+                        <p class="text-secondary mb-1">복습한 날짜</p>
+                        <strong class="h4" th:text="${statistics.summary().activeReviewDays()}">0</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="border rounded bg-white p-3 h-100">
+                        <p class="text-secondary mb-1">기억함 비율</p>
+                        <strong class="h4"><span th:text="${statistics.summary().rememberedRate()}">0</span>%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border rounded bg-white p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="h6 mb-0">일별 복습량</h3>
+                    <span class="text-secondary small">
+                        가장 많이 복습한 날짜:
+                        <span th:if="${statistics.summary().mostReviewedDate() != null}">
+                            <span th:text="${#temporals.format(statistics.summary().mostReviewedDate(), 'MM/dd')}">07/29</span>
+                            ·
+                            <span th:text="${statistics.summary().mostReviewedCount()}">0</span>회
+                        </span>
+                        <span th:unless="${statistics.summary().mostReviewedDate() != null}">없음</span>
+                    </span>
+                </div>
+
+                <div class="row g-2 align-items-end text-center">
+                    <div th:each="daily : ${statistics.dailyStatistics()}" class="col">
+                        <div class="review-bar-wrap d-flex align-items-end justify-content-center mb-2">
+                            <div class="review-bar rounded-top"
+                                 th:classappend="${daily.today()} ? ' bg-primary' : ' bg-secondary'"
+                                 th:style="'height: ' + ${daily.barHeightPercent()} + '%'"></div>
+                        </div>
+                        <div th:class="${daily.today()} ? 'border border-primary rounded p-2 bg-primary-subtle' : 'border rounded p-2'">
+                            <div class="fw-semibold" th:text="${daily.dayOfWeek()}">수</div>
+                            <div class="small text-secondary" th:text="${#temporals.format(daily.date(), 'MM/dd')}">07/29</div>
+                            <div class="fw-semibold mt-1"><span th:text="${daily.totalReviewCount()}">0</span>회</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div th:each="daily : ${statistics.dailyStatistics()}" class="col-12 col-md-6 col-xl">
+                    <div th:class="${daily.today()} ? 'border border-primary rounded bg-primary-subtle p-3 h-100' : 'border rounded bg-white p-3 h-100'">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>
+                                <span th:text="${daily.dayOfWeek()}">수</span>
+                                <span th:text="${#temporals.format(daily.date(), 'MM/dd')}">07/29</span>
+                            </strong>
+                            <span th:if="${daily.today()}" class="badge text-bg-primary">오늘</span>
+                        </div>
+                        <p class="mb-1">총 복습 <strong th:text="${daily.totalReviewCount()}">0</strong>회</p>
+                        <p class="mb-1 text-success">외웠어요 <strong th:text="${daily.rememberedCount()}">0</strong>회</p>
+                        <p class="mb-1 text-danger">다시 볼래요 <strong th:text="${daily.difficultCount()}">0</strong>회</p>
+                        <p class="mb-1">고유 단어 <strong th:text="${daily.uniqueVocabularyCount()}">0</strong>개</p>
+                        <p class="mb-0">기억함 비율 <strong><span th:text="${daily.rememberedRate()}">0</span>%</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <form th:action="@{/review/start}" th:object="${form}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
