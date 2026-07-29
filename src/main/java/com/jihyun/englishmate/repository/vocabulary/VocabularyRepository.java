@@ -44,4 +44,23 @@ public interface VocabularyRepository extends JpaRepository<Vocabulary, Long> {
             @Param("memberId") Long memberId,
             @Param("wordIds") List<Long> wordIds
     );
+
+    /**
+     * 선택한 학습 자료에 포함되며 회원 단어장에 저장된, 의미가 있는 단어만 조회합니다.
+     */
+    @Query("""
+            select distinct v
+            from MaterialWord mw
+            join mw.word w
+            join Vocabulary v on v.word = w
+            join fetch v.word
+            where mw.studyMaterial.id in :studyMaterialIds
+              and v.member.id = :memberId
+              and v.meaning is not null
+              and v.meaning <> ''
+            """)
+    List<Vocabulary> findQuizTargets(
+            @Param("memberId") Long memberId,
+            @Param("studyMaterialIds") List<Long> studyMaterialIds
+    );
 }

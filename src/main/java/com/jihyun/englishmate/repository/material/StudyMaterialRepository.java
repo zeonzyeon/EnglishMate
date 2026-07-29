@@ -1,6 +1,7 @@
 package com.jihyun.englishmate.repository.material;
 
 import com.jihyun.englishmate.entity.material.StudyMaterial;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ public interface StudyMaterialRepository extends JpaRepository<StudyMaterial, Lo
      * 로그인한 회원의 학습 지문 목록만 조회합니다.
      */
     List<StudyMaterial> findAllByMemberIdOrderByCreatedAtDesc(Long memberId);
+
+    List<StudyMaterial> findAllByMemberIdAndIdIn(Long memberId, Collection<Long> ids);
 
     /**
      * 상세 조회와 권한 검증을 함께 처리하기 위해 회원 ID 조건을 포함합니다.
