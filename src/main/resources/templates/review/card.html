@@ -39,8 +39,12 @@
                 <p class="display-4 fw-semibold mb-0" th:text="${card.wordText()}">word</p>
             </div>
 
+            <button id="revealButton" type="button" class="btn btn-outline-primary w-100 mb-3">
+                뜻 보기
+            </button>
+
             <div id="cardBack" class="border rounded p-4 mb-4 bg-white d-none">
-                <dl class="row mb-0">
+                <dl class="row mb-3">
                     <dt class="col-sm-3">의미</dt>
                     <dd class="col-sm-9" th:text="${card.meaning()}">meaning</dd>
 
@@ -58,9 +62,11 @@
                         </span>
                     </dd>
                 </dl>
-            </div>
 
-            <button id="revealButton" type="button" class="btn btn-outline-primary w-100 mb-3">뜻 보기</button>
+                <button id="hideButton" type="button" class="btn btn-outline-secondary btn-sm w-100">
+                    닫기
+                </button>
+            </div>
 
             <form th:action="@{/review/{sessionId}/answer(sessionId=${card.reviewSessionId()})}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -70,13 +76,11 @@
                     <button type="submit"
                             name="responseType"
                             value="DIFFICULT"
-                            class="btn btn-outline-danger flex-fill review-answer"
-                            disabled>다시 볼래요</button>
+                            class="btn btn-outline-danger flex-fill review-answer">다시 볼래요</button>
                     <button type="submit"
                             name="responseType"
                             value="REMEMBERED"
-                            class="btn btn-success flex-fill review-answer"
-                            disabled>외웠어요</button>
+                            class="btn btn-success flex-fill review-answer">외웠어요</button>
                 </div>
             </form>
         </div>
@@ -85,13 +89,17 @@
 
 <script>
     const revealButton = document.getElementById('revealButton');
+    const hideButton = document.getElementById('hideButton');
     const cardBack = document.getElementById('cardBack');
-    const answerButtons = Array.from(document.querySelectorAll('.review-answer'));
 
     revealButton.addEventListener('click', () => {
         cardBack.classList.remove('d-none');
         revealButton.classList.add('d-none');
-        answerButtons.forEach((button) => button.disabled = false);
+    });
+
+    hideButton.addEventListener('click', () => {
+        cardBack.classList.add('d-none');
+        revealButton.classList.remove('d-none');
     });
 </script>
 </body>
