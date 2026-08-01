@@ -1,0 +1,43 @@
+body {
+    background: #f6f8fb;
+}
+
+.dashboard-header {
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.summary-card,
+.statistics-panel,
+.daily-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.summary-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.summary-value {
+    color: #111827;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.statistics-bar-wrap {
+    height: 112px;
+}
+
+.statistics-bar {
+    width: 24px;
+    min-height: 2px;
+    transition: height 0.2s ease;
+}
+
+.today-card {
+    border-color: #0d6efd;
+    background: #eef5ff;
+}

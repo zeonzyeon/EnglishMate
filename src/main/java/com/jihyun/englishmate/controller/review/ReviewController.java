@@ -5,7 +5,6 @@ import com.jihyun.englishmate.dto.review.ReviewCardResponse;
 import com.jihyun.englishmate.dto.review.ReviewStartRequest;
 import com.jihyun.englishmate.security.member.CustomUserDetails;
 import com.jihyun.englishmate.service.review.ReviewService;
-import com.jihyun.englishmate.service.review.ReviewStatisticsService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -31,15 +30,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final ReviewStatisticsService reviewStatisticsService;
 
     @GetMapping
     public String index(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam(value = "endDate", required = false) String endDate,
             Model model
     ) {
-        addIndexAttributes(userDetails.getMemberId(), endDate, model);
+        addIndexAttributes(userDetails.getMemberId(), model);
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", new ReviewStartRequest(false, List.of()));
         }
@@ -54,7 +51,7 @@ public class ReviewController {
             Model model
     ) {
         if (bindingResult.hasErrors()) {
-            addIndexAttributes(userDetails.getMemberId(), null, model);
+            addIndexAttributes(userDetails.getMemberId(), model);
             return "review/index";
         }
 
@@ -62,7 +59,7 @@ public class ReviewController {
             Long sessionId = reviewService.start(userDetails.getMemberId(), request);
             return "redirect:/review/" + sessionId + "/card";
         } catch (IllegalArgumentException e) {
-            addIndexAttributes(userDetails.getMemberId(), null, model);
+            addIndexAttributes(userDetails.getMemberId(), model);
             model.addAttribute("warningMessage", e.getMessage());
             return "review/index";
         }
@@ -117,8 +114,7 @@ public class ReviewController {
         }
     }
 
-    private void addIndexAttributes(Long memberId, String endDate, Model model) {
+    private void addIndexAttributes(Long memberId, Model model) {
         model.addAttribute("scopeItems", reviewService.findScopeItems(memberId));
-        model.addAttribute("statistics", reviewStatisticsService.getWeeklyStatistics(memberId, endDate));
     }
 }
