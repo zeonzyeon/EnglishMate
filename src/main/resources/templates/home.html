@@ -17,17 +17,19 @@
         </button>
 
         <div id="homeNavbar" class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link active" th:href="@{/}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vocabulary}">My Vocabulary</a></li>
+            <ul class="navbar-nav app-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" th:href="@{/materials}">Study Materials</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vocabulary}">My Vocabulary</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/quiz}">Quiz</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/review}">Review</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/mypage}">My Page</a></li>
             </ul>
 
-            <div class="d-flex align-items-lg-center gap-3 flex-column flex-lg-row">
+            <div class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
                 <span class="user-greeting">안녕하세요, <strong th:text="${nickname}">회원</strong>님</span>
+                <a th:href="@{/mypage}" class="profile-link">
+                    <span class="profile-icon" aria-hidden="true"></span>
+                    <span>My Page</span>
+                </a>
                 <form th:action="@{/logout}" method="post" class="m-0">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
