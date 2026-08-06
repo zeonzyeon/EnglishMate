@@ -1,6 +1,7 @@
 package com.jihyun.englishmate.dto.material;
 
 import com.jihyun.englishmate.entity.material.StudyMaterial;
+import com.jihyun.englishmate.entity.material.StudyMaterialType;
 import java.time.LocalDateTime;
 
 /**
@@ -10,6 +11,7 @@ public record StudyMaterialResponse(
         Long id,
         String title,
         String content,
+        StudyMaterialType type,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -22,8 +24,17 @@ public record StudyMaterialResponse(
                 material.getId(),
                 material.getTitle(),
                 material.getContent(),
+                material.getType(),
                 material.getCreatedAt(),
                 material.getUpdatedAt()
         );
+    }
+
+    public boolean sample() {
+        return type == StudyMaterialType.SAMPLE;
+    }
+
+    public boolean personal() {
+        return type == StudyMaterialType.PERSONAL || type == null;
     }
 }

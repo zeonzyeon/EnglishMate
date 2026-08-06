@@ -12,21 +12,41 @@
         <div id="mainNavbar" class="collapse navbar-collapse">
             <ul class="navbar-nav app-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/materials}" data-nav-prefix="/materials">Study Materials</a>
+                    <a class="nav-link" th:href="@{/}"
+                       th:classappend="${currentPath == '/'} ? ' active'"
+                       th:attrappend="aria-current=${currentPath == '/'} ? 'page'">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/vocabulary}" data-nav-prefix="/vocabulary,/words">My Vocabulary</a>
+                    <a class="nav-link" th:href="@{/materials}"
+                       th:classappend="${currentPath.startsWith('/materials') or currentPath.startsWith('/study-materials')} ? ' active'"
+                       th:attrappend="aria-current=${currentPath.startsWith('/materials') or currentPath.startsWith('/study-materials')} ? 'page'">Study Materials</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/quiz}" data-nav-prefix="/quiz">Quiz</a>
+                <li class="nav-item" th:if="${loggedIn}">
+                    <a class="nav-link" th:href="@{/vocabulary}"
+                       th:classappend="${currentPath.startsWith('/vocabulary') or currentPath.startsWith('/words')} ? ' active'"
+                       th:attrappend="aria-current=${currentPath.startsWith('/vocabulary') or currentPath.startsWith('/words')} ? 'page'">My Vocabulary</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/review}" data-nav-prefix="/review">Review</a>
+                <li class="nav-item" th:if="${loggedIn}">
+                    <a class="nav-link" th:href="@{/quiz}"
+                       th:classappend="${currentPath.startsWith('/quiz')} ? ' active'"
+                       th:attrappend="aria-current=${currentPath.startsWith('/quiz')} ? 'page'">Quiz</a>
+                </li>
+                <li class="nav-item" th:if="${loggedIn}">
+                    <a class="nav-link" th:href="@{/review}"
+                       th:classappend="${currentPath.startsWith('/review')} ? ' active'"
+                       th:attrappend="aria-current=${currentPath.startsWith('/review')} ? 'page'">Review</a>
+                </li>
+                <li class="nav-item" th:unless="${loggedIn}">
+                    <a class="nav-link" th:href="@{/login}"
+                       th:classappend="${currentPath.startsWith('/login')} ? ' active'"
+                       th:attrappend="aria-current=${currentPath.startsWith('/login')} ? 'page'">Login</a>
                 </li>
             </ul>
 
-            <div class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
-                <a th:href="@{/mypage}" class="profile-link" data-nav-prefix="/mypage">
+            <div th:if="${loggedIn}" class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
+                <a th:href="@{/mypage}" class="profile-link"
+                   th:classappend="${currentPath.startsWith('/mypage')} ? ' active'"
+                   th:attrappend="aria-current=${currentPath.startsWith('/mypage')} ? 'page'">
                     <span class="profile-icon" aria-hidden="true"></span>
                     <span>My Page</span>
                 </a>
@@ -37,22 +57,6 @@
             </div>
         </div>
     </div>
-    <script>
-        (() => {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('[data-nav-prefix]');
-
-            navLinks.forEach((link) => {
-                const prefixes = link.dataset.navPrefix.split(',');
-                const active = prefixes.some((prefix) => currentPath === prefix || currentPath.startsWith(prefix + '/'));
-
-                if (active) {
-                    link.classList.add('active');
-                    link.setAttribute('aria-current', 'page');
-                }
-            });
-        })();
-    </script>
 </nav>
 </body>
 </html>

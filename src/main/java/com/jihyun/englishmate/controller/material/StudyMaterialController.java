@@ -38,9 +38,10 @@ public class StudyMaterialController {
      */
     @GetMapping
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        List<StudyMaterialResponse> materials = studyMaterialService.findAllByMember(userDetails.getMemberId());
+        List<StudyMaterialResponse> materials = userDetails == null
+                ? studyMaterialService.findAllForGuest()
+                : studyMaterialService.findAllByMember(userDetails.getMemberId());
         model.addAttribute("materials", materials);
-        model.addAttribute("nickname", userDetails.getNickname());
         return "materials/list";
     }
 
@@ -48,7 +49,11 @@ public class StudyMaterialController {
      * 학습 지문 등록 화면을 반환합니다.
      */
     @GetMapping("/new")
-    public String createForm(Model model) {
+    public String createForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+
         model.addAttribute("mode", "create");
         model.addAttribute("form", new StudyMaterialCreateRequest("", ""));
         return "materials/form";
@@ -84,8 +89,12 @@ public class StudyMaterialController {
             @PathVariable Long id,
             Model model
     ) {
-        StudyMaterialResponse material = studyMaterialService.findById(userDetails.getMemberId(), id);
-        List<ExtractedWordResponse> extractedWords = wordExtractService.findExtractedWords(userDetails.getMemberId(), id);
+        StudyMaterialResponse material = userDetails == null
+                ? studyMaterialService.findSampleById(id)
+                : studyMaterialService.findById(userDetails.getMemberId(), id);
+        List<ExtractedWordResponse> extractedWords = userDetails == null
+                ? wordExtractService.findExtractedWordsForGuest(id)
+                : wordExtractService.findExtractedWords(userDetails.getMemberId(), id);
         model.addAttribute("material", material);
         model.addAttribute("extractedWords", extractedWords);
         model.addAttribute("extractedWordCount", extractedWords.size());
@@ -101,7 +110,11 @@ public class StudyMaterialController {
             @PathVariable Long id,
             Model model
     ) {
-        StudyMaterialResponse material = studyMaterialService.findById(userDetails.getMemberId(), id);
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+
+        StudyMaterialResponse material = studyMaterialService.findEditableById(userDetails.getMemberId(), id);
         model.addAttribute("mode", "edit");
         model.addAttribute("materialId", id);
         model.addAttribute("form", new StudyMaterialUpdateRequest(material.title(), material.content()));

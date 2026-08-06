@@ -54,7 +54,7 @@ public class ReviewService {
     private final ReviewCardResultRepository reviewCardResultRepository;
 
     public List<ReviewScopeItemResponse> findScopeItems(Long memberId) {
-        return studyMaterialRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId)
+        return studyMaterialRepository.findVisibleMaterialsForMember(memberId)
                 .stream()
                 .map(ReviewScopeItemResponse::from)
                 .toList();
@@ -189,7 +189,7 @@ public class ReviewService {
 
     private List<StudyMaterial> resolveSelectedMaterials(Long memberId, ReviewStartRequest request) {
         if (request.selectAllMaterials()) {
-            List<StudyMaterial> materials = studyMaterialRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId);
+            List<StudyMaterial> materials = studyMaterialRepository.findVisibleMaterialsForMember(memberId);
             if (materials.isEmpty()) {
                 throw new IllegalArgumentException("등록된 학습 자료가 없습니다.");
             }
@@ -201,7 +201,7 @@ public class ReviewService {
             throw new IllegalArgumentException("학습 자료를 하나 이상 선택해주세요.");
         }
 
-        List<StudyMaterial> materials = studyMaterialRepository.findAllByMemberIdAndIdIn(memberId, selectedIds);
+        List<StudyMaterial> materials = studyMaterialRepository.findVisibleMaterialsForMemberByIds(memberId, selectedIds);
         if (materials.size() != selectedIds.stream().distinct().count()) {
             throw new IllegalArgumentException("선택할 수 없는 학습 자료가 포함되어 있습니다.");
         }

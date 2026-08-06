@@ -52,6 +52,12 @@ public class MaterialWord {
     @Column(length = 500)
     private String exampleSentence;
 
+    @Column(length = 255)
+    private String meaning;
+
+    @Column(length = 50)
+    private String partOfSpeech;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -73,6 +79,11 @@ public class MaterialWord {
      */
     public void updateFrequency(int frequency) {
         this.frequency = frequency;
+    }
+
+    public void updateMeaningAndPartOfSpeech(String meaning, String partOfSpeech) {
+        this.meaning = meaning;
+        this.partOfSpeech = partOfSpeech;
     }
 
     @PrePersist

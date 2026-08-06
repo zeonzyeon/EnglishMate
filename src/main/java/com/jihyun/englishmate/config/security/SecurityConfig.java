@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.http.HttpMethod;
 
 /**
  * Spring Security 인증/인가 설정을 관리합니다.
@@ -44,8 +45,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/signup", "/members/signup").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/home", "/login", "/signup", "/members/signup").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/materials", "/materials/**", "/study-materials", "/study-materials/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/materials", "/materials/**").authenticated()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/vocabulary/**", "/quiz/**", "/review/**", "/mypage/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

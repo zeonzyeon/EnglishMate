@@ -49,7 +49,18 @@ public interface MaterialWordRepository extends JpaRepository<MaterialWord, Long
             from MaterialWord mw
             join mw.word w
             join mw.studyMaterial sm
-            where sm.member.id = :memberId
+            where (
+                    sm.member.id = :memberId
+                    or (
+                        sm.type = com.jihyun.englishmate.entity.material.StudyMaterialType.SAMPLE
+                        and not exists (
+                            select 1
+                            from MemberSampleHide hide
+                            where hide.member.id = :memberId
+                              and hide.studyMaterial.id = sm.id
+                        )
+                    )
+                  )
               and w.id in :wordIds
             order by sm.title asc
             """)

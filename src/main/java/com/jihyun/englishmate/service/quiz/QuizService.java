@@ -56,7 +56,7 @@ public class QuizService {
      * 로그인한 사용자의 학습 자료를 퀴즈 범위 선택 DTO로 조회합니다.
      */
     public List<QuizScopeItemResponse> findScopeItems(Long memberId) {
-        return studyMaterialRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId)
+        return studyMaterialRepository.findVisibleMaterialsForMember(memberId)
                 .stream()
                 .map(QuizScopeItemResponse::from)
                 .toList();
@@ -218,7 +218,7 @@ public class QuizService {
 
     private List<StudyMaterial> resolveSelectedMaterials(Long memberId, QuizStartRequest request) {
         if (request.selectAllMaterials()) {
-            List<StudyMaterial> materials = studyMaterialRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId);
+            List<StudyMaterial> materials = studyMaterialRepository.findVisibleMaterialsForMember(memberId);
             if (materials.isEmpty()) {
                 throw new IllegalArgumentException("등록된 학습 자료가 없습니다.");
             }
@@ -230,7 +230,7 @@ public class QuizService {
             throw new IllegalArgumentException("학습 자료를 하나 이상 선택해주세요.");
         }
 
-        List<StudyMaterial> materials = studyMaterialRepository.findAllByMemberIdAndIdIn(memberId, selectedIds);
+        List<StudyMaterial> materials = studyMaterialRepository.findVisibleMaterialsForMemberByIds(memberId, selectedIds);
         if (materials.size() != selectedIds.stream().distinct().count()) {
             throw new IllegalArgumentException("선택할 수 없는 학습 자료가 포함되어 있습니다.");
         }

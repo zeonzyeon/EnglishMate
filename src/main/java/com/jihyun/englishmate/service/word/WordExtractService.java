@@ -1,8 +1,9 @@
 package com.jihyun.englishmate.service.word;
 
-import com.jihyun.englishmate.dto.word.WordExtractResult;
 import com.jihyun.englishmate.dto.word.ExtractedWordResponse;
+import com.jihyun.englishmate.dto.word.WordExtractResult;
 import com.jihyun.englishmate.entity.material.StudyMaterial;
+import com.jihyun.englishmate.entity.material.StudyMaterialType;
 import com.jihyun.englishmate.entity.vocabulary.Vocabulary;
 import com.jihyun.englishmate.entity.word.MaterialWord;
 import com.jihyun.englishmate.entity.word.Word;
@@ -36,57 +37,18 @@ public class WordExtractService {
     private final VocabularyRepository vocabularyRepository;
 
     /**
-     * 본인 소유의 학습 지문에서 단어를 추출하고 저장합니다.
+     * 본인 PERSONAL 학습 지문에서 단어를 추출하고 저장합니다.
      */
     @Transactional
     public WordExtractResult extractAndSave(Long memberId, Long studyMaterialId) {
         StudyMaterial studyMaterial = studyMaterialRepository.findByIdAndMemberId(studyMaterialId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
 
-        Map<String, ExtractedWord> wordFrequencies = extractWords(studyMaterial.getContent());
-        Map<Long, ExtractedWord> extractedWordByWordId = new LinkedHashMap<>();
-        for (ExtractedWord extractedWord : wordFrequencies.values()) {
-            Word word = findOrCreateWord(extractedWord.text(), extractedWord.normalizedText());
-            extractedWordByWordId.put(word.getId(), extractedWord);
-        }
-
-        List<MaterialWord> existingMaterialWords =
-                materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterial.getId());
-        Map<Long, MaterialWord> existingMaterialWordByWordId = existingMaterialWords.stream()
-                .collect(Collectors.toMap(materialWord -> materialWord.getWord().getId(), Function.identity()));
-
-        int savedWordCount = 0;
-
-        for (MaterialWord materialWord : existingMaterialWords) {
-            if (!extractedWordByWordId.containsKey(materialWord.getWord().getId())) {
-                materialWordRepository.delete(materialWord);
-            }
-        }
-
-        for (Map.Entry<Long, ExtractedWord> entry : extractedWordByWordId.entrySet()) {
-            MaterialWord existingMaterialWord = existingMaterialWordByWordId.get(entry.getKey());
-            if (existingMaterialWord != null) {
-                existingMaterialWord.updateFrequency(entry.getValue().frequency());
-                continue;
-            }
-
-            Word word = wordRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new EntityNotFoundException("단어를 찾을 수 없습니다."));
-            MaterialWord materialWord = MaterialWord.createMaterialWord(
-                    studyMaterial,
-                    word,
-                    entry.getValue().frequency()
-            );
-            materialWordRepository.save(materialWord);
-            savedWordCount++;
-        }
-
-        return new WordExtractResult(wordFrequencies.size(), savedWordCount);
+        return upsertMaterialWords(studyMaterial);
     }
 
     /**
-     * 수정된 본문 기준으로 학습 자료의 단어 연결을 모두 다시 생성합니다.
-     * 기존 Word와 Vocabulary는 유지하고 MaterialWord 연결만 갱신합니다.
+     * 수정된 본문 기준으로 학습 자료의 단어 연결을 다시 생성합니다.
      */
     @Transactional
     public WordExtractResult reextractMaterialWords(StudyMaterial studyMaterial) {
@@ -142,10 +104,10 @@ public class WordExtractService {
     }
 
     /**
-     * 본인 소유의 학습 지문에서 추출된 단어 목록을 조회합니다.
+     * 회원이 조회할 수 있는 학습 자료의 추출 단어 목록을 조회합니다.
      */
     public List<ExtractedWordResponse> findExtractedWords(Long memberId, Long studyMaterialId) {
-        studyMaterialRepository.findByIdAndMemberId(studyMaterialId, memberId)
+        studyMaterialRepository.findVisibleMaterialForMember(memberId, studyMaterialId)
                 .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
 
         List<MaterialWord> materialWords = materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterialId);
@@ -166,6 +128,61 @@ public class WordExtractService {
                         vocabularyByWordId.get(materialWord.getWord().getId())
                 ))
                 .toList();
+    }
+
+    /**
+     * 비회원이 SAMPLE 지문에서 추출된 단어를 조회합니다.
+     */
+    public List<ExtractedWordResponse> findExtractedWordsForGuest(Long studyMaterialId) {
+        studyMaterialRepository.findByIdAndType(studyMaterialId, StudyMaterialType.SAMPLE)
+                .orElseThrow(() -> new EntityNotFoundException("학습 자료를 찾을 수 없습니다."));
+
+        return materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterialId)
+                .stream()
+                .map(materialWord -> ExtractedWordResponse.from(materialWord, null))
+                .toList();
+    }
+
+    private WordExtractResult upsertMaterialWords(StudyMaterial studyMaterial) {
+        Map<String, ExtractedWord> wordFrequencies = extractWords(studyMaterial.getContent());
+        Map<Long, ExtractedWord> extractedWordByWordId = new LinkedHashMap<>();
+        for (ExtractedWord extractedWord : wordFrequencies.values()) {
+            Word word = findOrCreateWord(extractedWord.text(), extractedWord.normalizedText());
+            extractedWordByWordId.put(word.getId(), extractedWord);
+        }
+
+        List<MaterialWord> existingMaterialWords =
+                materialWordRepository.findAllByStudyMaterialIdOrderByWord(studyMaterial.getId());
+        Map<Long, MaterialWord> existingMaterialWordByWordId = existingMaterialWords.stream()
+                .collect(Collectors.toMap(materialWord -> materialWord.getWord().getId(), Function.identity()));
+
+        int savedWordCount = 0;
+
+        for (MaterialWord materialWord : existingMaterialWords) {
+            if (!extractedWordByWordId.containsKey(materialWord.getWord().getId())) {
+                materialWordRepository.delete(materialWord);
+            }
+        }
+
+        for (Map.Entry<Long, ExtractedWord> entry : extractedWordByWordId.entrySet()) {
+            MaterialWord existingMaterialWord = existingMaterialWordByWordId.get(entry.getKey());
+            if (existingMaterialWord != null) {
+                existingMaterialWord.updateFrequency(entry.getValue().frequency());
+                continue;
+            }
+
+            Word word = wordRepository.findById(entry.getKey())
+                    .orElseThrow(() -> new EntityNotFoundException("단어를 찾을 수 없습니다."));
+            MaterialWord materialWord = MaterialWord.createMaterialWord(
+                    studyMaterial,
+                    word,
+                    entry.getValue().frequency()
+            );
+            materialWordRepository.save(materialWord);
+            savedWordCount++;
+        }
+
+        return new WordExtractResult(wordFrequencies.size(), savedWordCount);
     }
 
     private boolean isValidNormalizedWord(String normalizedText) {

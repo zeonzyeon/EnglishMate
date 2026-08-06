@@ -48,6 +48,11 @@ body {
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
+button.quick-card {
+    font: inherit;
+    cursor: pointer;
+}
+
 .quick-card:hover {
     transform: translateY(-4px);
     border-color: #bfd0e8;

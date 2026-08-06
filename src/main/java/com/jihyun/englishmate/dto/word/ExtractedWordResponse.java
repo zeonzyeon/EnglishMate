@@ -19,13 +19,15 @@ public record ExtractedWordResponse(
 
     public static ExtractedWordResponse from(MaterialWord materialWord, Vocabulary vocabulary) {
         boolean savedInVocabulary = vocabulary != null;
+        String meaning = savedInVocabulary ? vocabulary.getMeaning() : materialWord.getMeaning();
+        String partOfSpeech = savedInVocabulary ? vocabulary.getPartOfSpeech() : materialWord.getPartOfSpeech();
 
         return new ExtractedWordResponse(
                 materialWord.getWord().getId(),
                 materialWord.getWord().getText(),
                 materialWord.getWord().getNormalizedText(),
-                savedInVocabulary ? vocabulary.getMeaning() : null,
-                savedInVocabulary ? vocabulary.getPartOfSpeech() : null,
+                meaning,
+                partOfSpeech,
                 materialWord.getFrequency(),
                 savedInVocabulary
         );

@@ -17,7 +17,14 @@ public class HomeController {
      */
     @GetMapping("/")
     public String home(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        model.addAttribute("nickname", userDetails.getNickname());
+        if (userDetails != null) {
+            model.addAttribute("nickname", userDetails.getNickname());
+        }
         return "home";
+    }
+
+    @GetMapping("/home")
+    public String homeAlias(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        return home(userDetails, model);
     }
 }
