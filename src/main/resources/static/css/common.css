@@ -19,6 +19,13 @@
     transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
+.app-nav .nav-button {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+}
+
 .app-nav .nav-link:hover,
 .app-nav .nav-link:focus {
     background: #f2f6fb;
@@ -47,6 +54,11 @@
     border: 1px solid #d6e5f8;
     border-radius: 999px;
     transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.profile-button {
+    appearance: none;
+    cursor: pointer;
 }
 
 .profile-link:hover,

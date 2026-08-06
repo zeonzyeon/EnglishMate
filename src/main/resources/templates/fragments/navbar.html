@@ -21,42 +21,46 @@
                        th:classappend="${currentPath.startsWith('/materials') or currentPath.startsWith('/study-materials')} ? ' active'"
                        th:attrappend="aria-current=${currentPath.startsWith('/materials') or currentPath.startsWith('/study-materials')} ? 'page'">Study Materials</a>
                 </li>
-                <li class="nav-item" th:if="${loggedIn}">
-                    <a class="nav-link" th:href="@{/vocabulary}"
+                <li class="nav-item">
+                    <a th:if="${loggedIn}" class="nav-link" th:href="@{/vocabulary}"
                        th:classappend="${currentPath.startsWith('/vocabulary') or currentPath.startsWith('/words')} ? ' active'"
                        th:attrappend="aria-current=${currentPath.startsWith('/vocabulary') or currentPath.startsWith('/words')} ? 'page'">My Vocabulary</a>
+                    <button th:unless="${loggedIn}" type="button" class="nav-link nav-button"
+                            data-login-required-message="단어장 기능은 로그인 후 이용할 수 있습니다.">My Vocabulary</button>
                 </li>
-                <li class="nav-item" th:if="${loggedIn}">
-                    <a class="nav-link" th:href="@{/quiz}"
+                <li class="nav-item">
+                    <a th:if="${loggedIn}" class="nav-link" th:href="@{/quiz}"
                        th:classappend="${currentPath.startsWith('/quiz')} ? ' active'"
                        th:attrappend="aria-current=${currentPath.startsWith('/quiz')} ? 'page'">Quiz</a>
+                    <button th:unless="${loggedIn}" type="button" class="nav-link nav-button"
+                            data-login-required-message="Quiz 기능은 로그인 후 이용할 수 있습니다.">Quiz</button>
                 </li>
-                <li class="nav-item" th:if="${loggedIn}">
-                    <a class="nav-link" th:href="@{/review}"
+                <li class="nav-item">
+                    <a th:if="${loggedIn}" class="nav-link" th:href="@{/review}"
                        th:classappend="${currentPath.startsWith('/review')} ? ' active'"
                        th:attrappend="aria-current=${currentPath.startsWith('/review')} ? 'page'">Review</a>
-                </li>
-                <li class="nav-item" th:unless="${loggedIn}">
-                    <a class="nav-link" th:href="@{/login}"
-                       th:classappend="${currentPath.startsWith('/login')} ? ' active'"
-                       th:attrappend="aria-current=${currentPath.startsWith('/login')} ? 'page'">Login</a>
+                    <button th:unless="${loggedIn}" type="button" class="nav-link nav-button"
+                            data-login-required-message="Review 기능은 로그인 후 이용할 수 있습니다.">Review</button>
                 </li>
             </ul>
 
-            <div th:if="${loggedIn}" class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
-                <a th:href="@{/mypage}" class="profile-link"
+            <div class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
+                <a th:if="${loggedIn}" th:href="@{/mypage}" class="profile-link"
                    th:classappend="${currentPath.startsWith('/mypage')} ? ' active'"
                    th:attrappend="aria-current=${currentPath.startsWith('/mypage')} ? 'page'">
                     <span class="profile-icon" aria-hidden="true"></span>
                     <span>My Page</span>
                 </a>
-                <form th:action="@{/logout}" method="post" class="m-0">
+                <a th:unless="${loggedIn}" th:href="@{/login}" class="btn btn-outline-primary btn-sm"
+                   th:classappend="${currentPath.startsWith('/login')} ? ' active'">Login</a>
+                <form th:if="${loggedIn}" th:action="@{/logout}" method="post" class="m-0">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
                 </form>
             </div>
         </div>
     </div>
+    <div th:replace="~{fragments/login-required-modal :: loginRequiredModal}"></div>
 </nav>
 </body>
 </html>
