@@ -11,14 +11,22 @@
 
         <div id="mainNavbar" class="collapse navbar-collapse">
             <ul class="navbar-nav app-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" th:href="@{/materials}">Study Materials</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vocabulary}">My Vocabulary</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/quiz}">Quiz</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/review}">Review</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/materials}" data-nav-prefix="/materials">Study Materials</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vocabulary}" data-nav-prefix="/vocabulary,/words">My Vocabulary</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/quiz}" data-nav-prefix="/quiz">Quiz</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/review}" data-nav-prefix="/review">Review</a>
+                </li>
             </ul>
 
             <div class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
-                <a th:href="@{/mypage}" class="profile-link">
+                <a th:href="@{/mypage}" class="profile-link" data-nav-prefix="/mypage">
                     <span class="profile-icon" aria-hidden="true"></span>
                     <span>My Page</span>
                 </a>
@@ -29,6 +37,22 @@
             </div>
         </div>
     </div>
+    <script>
+        (() => {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('[data-nav-prefix]');
+
+            navLinks.forEach((link) => {
+                const prefixes = link.dataset.navPrefix.split(',');
+                const active = prefixes.some((prefix) => currentPath === prefix || currentPath.startsWith(prefix + '/'));
+
+                if (active) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+        })();
+    </script>
 </nav>
 </body>
 </html>
