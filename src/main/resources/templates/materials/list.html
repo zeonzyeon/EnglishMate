@@ -30,7 +30,6 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                     <tr>
-                        <th>구분</th>
                         <th>제목</th>
                         <th>작성일</th>
                         <th>수정일</th>
@@ -39,10 +38,6 @@
                     </thead>
                     <tbody>
                     <tr th:each="material : ${materials}">
-                        <td>
-                            <span th:if="${material.sample()}" class="badge text-bg-info">SAMPLE</span>
-                            <span th:unless="${material.sample()}" class="badge text-bg-light border">PERSONAL</span>
-                        </td>
                         <td class="fw-semibold" th:text="${material.title()}">제목</td>
                         <td th:text="${#temporals.format(material.createdAt(), 'yyyy-MM-dd HH:mm')}">작성일</td>
                         <td th:text="${#temporals.format(material.updatedAt(), 'yyyy-MM-dd HH:mm')}">수정일</td>
