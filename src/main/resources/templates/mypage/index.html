@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
     <div class="container py-4">
         <p class="text-secondary mb-1">My Page</p>
         <h1 class="h3 mb-2">안녕하세요, <span th:text="${mypage.nickname()}">회원</span>님.</h1>
-        <p class="text-secondary mb-0">복습과 퀴즈 학습 현황을 최근 7일 기준으로 확인할 수 있습니다.</p>
+        <p class="text-secondary mb-0">최근 7일 동안의 복습과 퀴즈 흐름을 한눈에 확인할 수 있습니다.</p>
     </div>
 </header>
 
@@ -23,11 +23,11 @@
     <section class="statistics-panel p-4 mb-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
-                <h2 class="h5 mb-1">Learning Statistics</h2>
+                <h2 class="h5 mb-1">Learning Overview</h2>
                 <p class="text-secondary mb-0">
-                    <span th:text="${#temporals.format(mypage.startDate(), 'yyyy.MM.dd')}">2026.07.23</span>
+                    <span th:text="${#temporals.format(mypage.startDate(), 'yyyy.MM.dd')}">2026.08.02</span>
                     ~
-                    <span th:text="${#temporals.format(mypage.endDate(), 'yyyy.MM.dd')}">2026.07.29</span>
+                    <span th:text="${#temporals.format(mypage.endDate(), 'yyyy.MM.dd')}">2026.08.08</span>
                 </p>
             </div>
             <div class="d-flex gap-2">
@@ -39,92 +39,122 @@
         </div>
     </section>
 
-    <section class="statistics-panel p-4 mb-4">
-        <div class="mb-4">
-            <h2 class="h4 mb-1">Review Statistics</h2>
-            <p class="text-secondary mb-0">플래시카드 복습 기록을 기준으로 계산합니다.</p>
-        </div>
-
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-lg-2"><div class="summary-card p-3 h-100"><p class="summary-label">총 복습</p><div class="summary-value" th:text="${mypage.reviewStatistics().summary().totalReviewCount()}">0</div></div></div>
-            <div class="col-6 col-lg-2"><div class="summary-card p-3 h-100"><p class="summary-label">외웠어요</p><div class="summary-value text-success" th:text="${mypage.reviewStatistics().summary().rememberedCount()}">0</div></div></div>
-            <div class="col-6 col-lg-2"><div class="summary-card p-3 h-100"><p class="summary-label">다시 볼래요</p><div class="summary-value text-danger" th:text="${mypage.reviewStatistics().summary().difficultCount()}">0</div></div></div>
-            <div class="col-6 col-lg-2"><div class="summary-card p-3 h-100"><p class="summary-label">복습 단어</p><div class="summary-value" th:text="${mypage.reviewStatistics().summary().uniqueVocabularyCount()}">0</div></div></div>
-            <div class="col-6 col-lg-2"><div class="summary-card p-3 h-100"><p class="summary-label">복습한 날</p><div class="summary-value" th:text="${mypage.reviewStatistics().summary().activeReviewDays()}">0</div></div></div>
-            <div class="col-6 col-lg-2"><div class="summary-card p-3 h-100"><p class="summary-label">기억 비율</p><div class="summary-value"><span th:text="${mypage.reviewStatistics().summary().rememberedRate()}">0</span>%</div></div></div>
-        </div>
-
-        <div class="row g-2 align-items-end text-center mb-4">
-            <div th:each="daily : ${mypage.reviewStatistics().dailyStatistics()}" class="col">
-                <div class="statistics-bar-wrap d-flex align-items-end justify-content-center mb-2">
-                    <div class="statistics-bar rounded-top" th:classappend="${daily.today()} ? ' bg-primary' : ' bg-secondary'" th:style="'height: ' + ${daily.barHeightPercent()} + '%'"></div>
+    <section class="overview-grid mb-4">
+        <article class="overview-card">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <p class="summary-label mb-1">Review</p>
+                    <h2 class="h5 mb-0">복습 상태</h2>
                 </div>
-                <div th:class="${daily.today()} ? 'daily-card today-card p-2' : 'daily-card p-2'">
-                    <div class="fw-semibold" th:text="${daily.dayOfWeek()}">월</div>
-                    <div class="small text-secondary" th:text="${#temporals.format(daily.date(), 'MM/dd')}">07/29</div>
-                    <div class="fw-semibold mt-1"><span th:text="${daily.totalReviewCount()}">0</span>회</div>
-                </div>
+                <span class="stat-badge">최근 7일</span>
             </div>
-        </div>
 
-        <div class="row g-2">
-            <div th:each="daily : ${mypage.reviewStatistics().dailyStatistics()}" class="col-12 col-md-6 col-xl">
-                <div th:class="${daily.today()} ? 'daily-card today-card p-3 h-100' : 'daily-card p-3 h-100'">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong><span th:text="${daily.dayOfWeek()}">월</span> <span th:text="${#temporals.format(daily.date(), 'MM/dd')}">07/29</span></strong>
-                        <span th:if="${daily.today()}" class="badge text-bg-primary">오늘</span>
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="metric-card">
+                        <p class="summary-label">복습 횟수</p>
+                        <div class="summary-value" th:text="${mypage.reviewStatistics().summary().totalReviewCount()}">0</div>
                     </div>
-                    <p class="mb-1">총 복습 <strong th:text="${daily.totalReviewCount()}">0</strong>회</p>
-                    <p class="mb-1 text-success">외웠어요 <strong th:text="${daily.rememberedCount()}">0</strong>회</p>
-                    <p class="mb-1 text-danger">다시 볼래요 <strong th:text="${daily.difficultCount()}">0</strong>회</p>
-                    <p class="mb-1">고유 단어 <strong th:text="${daily.uniqueVocabularyCount()}">0</strong>개</p>
-                    <p class="mb-0">기억 비율 <strong><span th:text="${daily.rememberedRate()}">0</span>%</strong></p>
+                </div>
+                <div class="col-6">
+                    <div class="metric-card">
+                        <p class="summary-label">기억 비율</p>
+                        <div class="summary-value"><span th:text="${mypage.reviewStatistics().summary().rememberedRate()}">0</span>%</div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="sub-stat-row mt-3">
+                <span>외웠어요 <strong th:text="${mypage.reviewStatistics().summary().rememberedCount()}">0</strong></span>
+                <span>다시 볼래요 <strong th:text="${mypage.reviewStatistics().summary().difficultCount()}">0</strong></span>
+                <span>복습 단어 <strong th:text="${mypage.reviewStatistics().summary().uniqueVocabularyCount()}">0</strong></span>
+            </div>
+        </article>
+
+        <article class="overview-card">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <p class="summary-label mb-1">Quiz</p>
+                    <h2 class="h5 mb-0">퀴즈 상태</h2>
+                </div>
+                <span class="stat-badge">최근 7일</span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="metric-card">
+                        <p class="summary-label">푼 문제</p>
+                        <div class="summary-value" th:text="${mypage.quizStatistics().summary().solvedQuestionCount()}">0</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-card">
+                        <p class="summary-label">정답률</p>
+                        <div class="summary-value"><span th:text="${mypage.quizStatistics().summary().averageCorrectRate()}">0</span>%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-stat-row mt-3">
+                <span>응시 <strong th:text="${mypage.quizStatistics().summary().quizAttemptCount()}">0</strong></span>
+                <span>맞힌 문제 <strong th:text="${mypage.quizStatistics().summary().correctCount()}">0</strong></span>
+                <span>틀린 문제 <strong th:text="${mypage.quizStatistics().summary().wrongCount()}">0</strong></span>
+            </div>
+        </article>
     </section>
 
     <section class="statistics-panel p-4">
-        <div class="mb-4">
-            <h2 class="h4 mb-1">Quiz Statistics</h2>
-            <p class="text-secondary mb-0">완료된 퀴즈 결과를 기준으로 계산합니다.</p>
-        </div>
-
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-lg"><div class="summary-card p-3 h-100"><p class="summary-label">총 응시</p><div class="summary-value" th:text="${mypage.quizStatistics().summary().quizAttemptCount()}">0</div></div></div>
-            <div class="col-6 col-lg"><div class="summary-card p-3 h-100"><p class="summary-label">총 문제</p><div class="summary-value" th:text="${mypage.quizStatistics().summary().solvedQuestionCount()}">0</div></div></div>
-            <div class="col-6 col-lg"><div class="summary-card p-3 h-100"><p class="summary-label">맞힌 문제</p><div class="summary-value text-success" th:text="${mypage.quizStatistics().summary().correctCount()}">0</div></div></div>
-            <div class="col-6 col-lg"><div class="summary-card p-3 h-100"><p class="summary-label">틀린 문제</p><div class="summary-value text-danger" th:text="${mypage.quizStatistics().summary().wrongCount()}">0</div></div></div>
-            <div class="col-6 col-lg"><div class="summary-card p-3 h-100"><p class="summary-label">평균 정답률</p><div class="summary-value"><span th:text="${mypage.quizStatistics().summary().averageCorrectRate()}">0</span>%</div></div></div>
-        </div>
-
-        <div class="row g-2 align-items-end text-center mb-4">
-            <div th:each="daily : ${mypage.quizStatistics().dailyStatistics()}" class="col">
-                <div class="statistics-bar-wrap d-flex align-items-end justify-content-center mb-2">
-                    <div class="statistics-bar rounded-top" th:classappend="${daily.today()} ? ' bg-primary' : ' bg-secondary'" th:style="'height: ' + ${daily.barHeightPercent()} + '%'"></div>
-                </div>
-                <div th:class="${daily.today()} ? 'daily-card today-card p-2' : 'daily-card p-2'">
-                    <div class="fw-semibold" th:text="${daily.dayOfWeek()}">월</div>
-                    <div class="small text-secondary" th:text="${#temporals.format(daily.date(), 'MM/dd')}">07/29</div>
-                    <div class="fw-semibold mt-1"><span th:text="${daily.solvedQuestionCount()}">0</span>문제</div>
-                </div>
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <h2 class="h4 mb-1">Daily Learning Flow</h2>
+                <p class="text-secondary mb-0">최신 날짜부터 복습과 퀴즈 기록을 함께 보여줍니다.</p>
             </div>
         </div>
 
-        <div class="row g-2">
-            <div th:each="daily : ${mypage.quizStatistics().dailyStatistics()}" class="col-12 col-md-6 col-xl">
-                <div th:class="${daily.today()} ? 'daily-card today-card p-3 h-100' : 'daily-card p-3 h-100'">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong><span th:text="${daily.dayOfWeek()}">월</span> <span th:text="${#temporals.format(daily.date(), 'MM/dd')}">07/29</span></strong>
-                        <span th:if="${daily.today()}" class="badge text-bg-primary">오늘</span>
-                    </div>
-                    <p class="mb-1">응시 <strong th:text="${daily.quizAttemptCount()}">0</strong>회</p>
-                    <p class="mb-1">푼 문제 <strong th:text="${daily.solvedQuestionCount()}">0</strong>개</p>
-                    <p class="mb-1 text-success">맞힌 문제 <strong th:text="${daily.correctCount()}">0</strong>개</p>
-                    <p class="mb-1 text-danger">틀린 문제 <strong th:text="${daily.wrongCount()}">0</strong>개</p>
-                    <p class="mb-0">정답률 <strong><span th:text="${daily.correctRate()}">0</span>%</strong></p>
-                </div>
-            </div>
+        <div class="table-responsive">
+            <table class="table align-middle learning-table mb-0">
+                <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>복습</th>
+                    <th>기억 비율</th>
+                    <th>퀴즈</th>
+                    <th>정답률</th>
+                    <th class="text-end">요약</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="index : ${#numbers.sequence(#lists.size(mypage.reviewStatistics().dailyStatistics()) - 1, 0)}"
+                    th:with="reviewDaily=${mypage.reviewStatistics().dailyStatistics()[index]},
+                             quizDaily=${mypage.quizStatistics().dailyStatistics()[index]}"
+                    th:classappend="${reviewDaily.today()} ? 'today-row'">
+                    <td>
+                        <div class="fw-semibold">
+                            <span th:text="${reviewDaily.dayOfWeek()}">월</span>
+                            <span th:if="${reviewDaily.today()}" class="badge text-bg-primary ms-1">오늘</span>
+                        </div>
+                        <div class="small text-secondary" th:text="${#temporals.format(reviewDaily.date(), 'MM/dd')}">08/08</div>
+                    </td>
+                    <td>
+                        <strong th:text="${reviewDaily.totalReviewCount()}">0</strong>회
+                    </td>
+                    <td>
+                        <span th:text="${reviewDaily.rememberedRate()}">0</span>%
+                    </td>
+                    <td>
+                        <strong th:text="${quizDaily.solvedQuestionCount()}">0</strong>문제
+                        <span class="text-secondary small ms-1">/ <span th:text="${quizDaily.quizAttemptCount()}">0</span>회</span>
+                    </td>
+                    <td>
+                        <span th:text="${quizDaily.correctRate()}">0</span>%
+                    </td>
+                    <td class="text-end text-secondary small">
+                        <span th:text="${reviewDaily.rememberedCount()}">0</span> 기억 ·
+                        <span th:text="${quizDaily.correctCount()}">0</span> 정답
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 </main>

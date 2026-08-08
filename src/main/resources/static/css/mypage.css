@@ -27,6 +27,72 @@ body {
     font-weight: 700;
 }
 
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.overview-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 1.5rem;
+}
+
+.metric-card {
+    height: 100%;
+    border: 1px solid #edf0f4;
+    border-radius: 8px;
+    background: #f9fafb;
+    padding: 1rem;
+}
+
+.stat-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: #eef5ff;
+    color: #1f4f8f;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.sub-stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sub-stat-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 30px;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #4b5563;
+    font-size: 0.88rem;
+}
+
+.learning-table thead th {
+    color: #6b7280;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: #f9fafb;
+}
+
+.learning-table tbody td {
+    border-color: #edf0f4;
+}
+
+.today-row td {
+    background: #eef5ff;
+}
+
 .statistics-bar-wrap {
     height: 112px;
 }
@@ -40,4 +106,10 @@ body {
 .today-card {
     border-color: #0d6efd;
     background: #eef5ff;
+}
+
+@media (max-width: 991.98px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
 }
