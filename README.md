@@ -91,6 +91,13 @@ EnglishMate는 사용자가 직접 영어 학습 자료를 입력하면 텍스�
 
 ---
 
+## 화면
+
+<img width="2400" alt="Home" src="https://github.com/user-attachments/assets/b72aa506-5349-4467-9b1f-fcad257e928d" />
+<img width="2400" alt="Login" src="https://github.com/user-attachments/assets/88f43393-82cf-4bcf-b3a3-1ad280df57cd" />
+
+---
+
 ## 서비스 흐름
 
 ```text
