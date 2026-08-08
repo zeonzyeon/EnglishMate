@@ -135,19 +135,13 @@
                         </div>
                         <div class="small text-secondary" th:text="${#temporals.format(reviewDaily.date(), 'MM/dd')}">08/08</div>
                     </td>
-                    <td>
-                        <strong th:text="${reviewDaily.totalReviewCount()}">0</strong>회
-                    </td>
-                    <td>
-                        <span th:text="${reviewDaily.rememberedRate()}">0</span>%
-                    </td>
+                    <td><strong th:text="${reviewDaily.totalReviewCount()}">0</strong>회</td>
+                    <td><span th:text="${reviewDaily.rememberedRate()}">0</span>%</td>
                     <td>
                         <strong th:text="${quizDaily.solvedQuestionCount()}">0</strong>문제
                         <span class="text-secondary small ms-1">/ <span th:text="${quizDaily.quizAttemptCount()}">0</span>회</span>
                     </td>
-                    <td>
-                        <span th:text="${quizDaily.correctRate()}">0</span>%
-                    </td>
+                    <td><span th:text="${quizDaily.correctRate()}">0</span>%</td>
                     <td class="text-end text-secondary small">
                         <span th:text="${reviewDaily.rememberedCount()}">0</span> 기억 ·
                         <span th:text="${quizDaily.correctCount()}">0</span> 정답

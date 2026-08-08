@@ -39,8 +39,8 @@
                     <tbody>
                     <tr th:each="material : ${materials}">
                         <td class="fw-semibold" th:text="${material.title()}">제목</td>
-                        <td th:text="${#temporals.format(material.createdAt(), 'yyyy-MM-dd HH:mm')}">작성일</td>
-                        <td th:text="${#temporals.format(material.updatedAt(), 'yyyy-MM-dd HH:mm')}">수정일</td>
+                        <td th:text="${#temporals.format(material.createdAt(), 'yyyy-MM-dd')}">작성일</td>
+                        <td th:text="${#temporals.format(material.updatedAt(), 'yyyy-MM-dd')}">수정일</td>
                         <td class="text-end">
                             <a th:href="@{/materials/{id}(id=${material.id()})}" class="btn btn-outline-primary btn-sm">상세보기</a>
                         </td>

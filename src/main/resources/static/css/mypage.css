@@ -1,30 +1,18 @@
-body {
-    background: #f6f8fb;
-}
-
 .dashboard-header {
-    border-bottom: 1px solid #e5e7eb;
-    background: #ffffff;
-}
-
-.summary-card,
-.statistics-panel,
-.daily-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #ffffff;
+    border-bottom: 1px solid var(--em-border);
+    background: rgba(11, 16, 32, 0.42);
 }
 
 .summary-label {
-    color: #6b7280;
+    color: var(--em-muted);
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
 }
 
 .summary-value {
-    color: #111827;
-    font-size: 1.5rem;
-    font-weight: 700;
+    color: var(--em-text);
+    font-size: 1.7rem;
+    font-weight: 850;
 }
 
 .overview-grid {
@@ -33,18 +21,24 @@ body {
     gap: 1rem;
 }
 
+.overview-card,
+.statistics-panel,
+.daily-card {
+    border: 1px solid var(--em-border);
+    border-radius: var(--em-radius);
+    background: var(--em-surface);
+    box-shadow: var(--em-shadow);
+}
+
 .overview-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #ffffff;
     padding: 1.5rem;
 }
 
 .metric-card {
     height: 100%;
-    border: 1px solid #edf0f4;
-    border-radius: 8px;
-    background: #f9fafb;
+    border: 1px solid var(--em-border);
+    border-radius: var(--em-radius-sm);
+    background: rgba(255, 255, 255, 0.05);
     padding: 1rem;
 }
 
@@ -53,11 +47,12 @@ body {
     align-items: center;
     min-height: 28px;
     padding: 0.2rem 0.65rem;
+    border: 1px solid rgba(53, 208, 186, 0.22);
     border-radius: 999px;
-    background: #eef5ff;
-    color: #1f4f8f;
+    background: rgba(53, 208, 186, 0.08);
+    color: var(--em-teal);
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .sub-stat-row {
@@ -72,40 +67,27 @@ body {
     gap: 0.25rem;
     min-height: 30px;
     padding: 0.25rem 0.65rem;
+    border: 1px solid var(--em-border);
     border-radius: 999px;
-    background: #f3f4f6;
-    color: #4b5563;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--em-muted);
     font-size: 0.88rem;
 }
 
 .learning-table thead th {
-    color: #6b7280;
+    color: var(--em-muted);
     font-size: 0.88rem;
-    font-weight: 600;
-    background: #f9fafb;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .learning-table tbody td {
-    border-color: #edf0f4;
+    border-color: var(--em-border);
+    color: var(--em-text);
 }
 
 .today-row td {
-    background: #eef5ff;
-}
-
-.statistics-bar-wrap {
-    height: 112px;
-}
-
-.statistics-bar {
-    width: 24px;
-    min-height: 2px;
-    transition: height 0.2s ease;
-}
-
-.today-card {
-    border-color: #0d6efd;
-    background: #eef5ff;
+    background: rgba(142, 167, 255, 0.1);
 }
 
 @media (max-width: 991.98px) {
