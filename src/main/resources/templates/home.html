@@ -14,8 +14,8 @@
 <main>
     <section class="hero-section">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7">
                     <p class="hero-eyebrow mb-2">Personal English Learning</p>
                     <h1 class="display-5 fw-bold mb-3">Welcome to EnglishMate</h1>
                     <p class="lead text-secondary mb-4">
@@ -25,6 +25,11 @@
                         <a th:if="${loggedIn}" th:href="@{/quiz}" class="btn btn-primary btn-lg">Start Learning</a>
                         <button th:unless="${loggedIn}" type="button" class="btn btn-primary btn-lg"
                                 data-login-required-message="Quiz 기능은 로그인 후 이용할 수 있습니다.">Start Learning</button>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="hero-visual" aria-hidden="true">
+                        <img th:src="@{/images/englishmate-main-icon.png}" alt="">
                     </div>
                 </div>
             </div>
@@ -102,5 +107,4 @@
 <script th:src="@{/js/home.js}"></script>
 </body>
 </html>
-
 
