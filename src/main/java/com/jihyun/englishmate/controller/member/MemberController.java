@@ -27,7 +27,7 @@ public class MemberController {
      */
     @GetMapping({"/signup", "/members/signup"})
     public String signupForm(Model model) {
-        model.addAttribute("signupForm", new MemberRequest.Signup("", "", ""));
+        model.addAttribute("signupForm", new MemberRequest.Signup("", "", "", ""));
         return "signup";
     }
 
@@ -40,6 +40,10 @@ public class MemberController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
+        if (request.passwordMismatch()) {
+            bindingResult.rejectValue("confirmPassword", "passwordMismatch", "비밀번호가 일치하지 않습니다.");
+        }
+
         if (bindingResult.hasErrors()) {
             return "signup";
         }

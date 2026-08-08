@@ -60,6 +60,15 @@
     line-height: 1.08 !important;
 }
 
+.signup-subtitle {
+    max-width: 420px;
+    margin-top: 0.85rem;
+    margin-bottom: 0;
+    color: var(--em-muted);
+    font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+    line-height: 1.6;
+}
+
 .auth-kicker {
     max-width: 440px;
     color: var(--em-teal);

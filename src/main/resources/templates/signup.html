@@ -15,7 +15,11 @@
             <a th:href="@{/}" class="auth-brand">EnglishMate</a>
 
             <div class="auth-copy compact-copy">
-                <h1 class="signup-title">Create a personal space for English study.</h1>
+                <h1>
+                    <span>EnglishMate</span>
+                    <span>Personal English Learning</span>
+                </h1>
+                <p class="signup-subtitle">Create a personal space for English study.</p>
             </div>
 
             <ul class="auth-points">
@@ -59,6 +63,17 @@
                            th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
                            placeholder="8자 이상 30자 이하">
                     <div class="invalid-feedback" th:errors="*{password}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+                    <input type="password"
+                           id="confirmPassword"
+                           th:field="*{confirmPassword}"
+                           class="form-control form-control-lg"
+                           th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
+                           placeholder="비밀번호 확인">
+                    <div class="invalid-feedback" th:errors="*{confirmPassword}"></div>
                 </div>
 
                 <div class="mb-4">
