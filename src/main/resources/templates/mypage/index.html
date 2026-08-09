@@ -15,7 +15,7 @@
     <div class="container py-4">
         <p class="text-secondary mb-1">My Page</p>
         <h1 class="h3 mb-2">안녕하세요, <span th:text="${mypage.nickname()}">회원</span>님.</h1>
-        <p class="text-secondary mb-0">최근 7일 동안의 복습과 퀴즈 흐름을 한눈에 확인할 수 있습니다.</p>
+        <p class="text-secondary mb-0">최근 7일 동안의 학습 흐름을 한눈에 확인할 수 있습니다.</p>
     </div>
 </header>
 
@@ -40,37 +40,6 @@
     </section>
 
     <section class="overview-grid mb-4">
-        <article class="overview-card">
-            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-                <div>
-                    <p class="summary-label mb-1">Review</p>
-                    <h2 class="h5 mb-0">복습 상태</h2>
-                </div>
-                <span class="stat-badge">최근 7일</span>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-6">
-                    <div class="metric-card">
-                        <p class="summary-label">복습 횟수</p>
-                        <div class="summary-value" th:text="${mypage.reviewStatistics().summary().totalReviewCount()}">0</div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="metric-card">
-                        <p class="summary-label">기억 비율</p>
-                        <div class="summary-value"><span th:text="${mypage.reviewStatistics().summary().rememberedRate()}">0</span>%</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sub-stat-row mt-3">
-                <span>외웠어요 <strong th:text="${mypage.reviewStatistics().summary().rememberedCount()}">0</strong></span>
-                <span>다시 볼래요 <strong th:text="${mypage.reviewStatistics().summary().difficultCount()}">0</strong></span>
-                <span>복습 단어 <strong th:text="${mypage.reviewStatistics().summary().uniqueVocabularyCount()}">0</strong></span>
-            </div>
-        </article>
-
         <article class="overview-card">
             <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
                 <div>
@@ -101,13 +70,44 @@
                 <span>틀린 문제 <strong th:text="${mypage.quizStatistics().summary().wrongCount()}">0</strong></span>
             </div>
         </article>
+
+        <article class="overview-card">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <p class="summary-label mb-1">Review</p>
+                    <h2 class="h5 mb-0">복습 상태</h2>
+                </div>
+                <span class="stat-badge">최근 7일</span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="metric-card">
+                        <p class="summary-label">복습 횟수</p>
+                        <div class="summary-value" th:text="${mypage.reviewStatistics().summary().totalReviewCount()}">0</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-card">
+                        <p class="summary-label">기억 비율</p>
+                        <div class="summary-value"><span th:text="${mypage.reviewStatistics().summary().rememberedRate()}">0</span>%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-stat-row mt-3">
+                <span>외웠어요 <strong th:text="${mypage.reviewStatistics().summary().rememberedCount()}">0</strong></span>
+                <span>다시 볼래요 <strong th:text="${mypage.reviewStatistics().summary().difficultCount()}">0</strong></span>
+                <span>복습 단어 <strong th:text="${mypage.reviewStatistics().summary().uniqueVocabularyCount()}">0</strong></span>
+            </div>
+        </article>
     </section>
 
     <section class="statistics-panel p-4">
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
                 <h2 class="h4 mb-1">Daily Learning Flow</h2>
-                <p class="text-secondary mb-0">최신 날짜부터 복습과 퀴즈 기록을 함께 보여줍니다.</p>
+                <p class="text-secondary mb-0">최신 날짜부터 퀴즈와 복습 기록을 함께 보여줍니다.</p>
             </div>
         </div>
 
@@ -116,10 +116,10 @@
                 <thead>
                 <tr>
                     <th>날짜</th>
-                    <th>복습</th>
-                    <th>기억 비율</th>
                     <th>퀴즈</th>
                     <th>정답률</th>
+                    <th>복습</th>
+                    <th>기억 비율</th>
                     <th class="text-end">요약</th>
                 </tr>
                 </thead>
@@ -135,16 +135,16 @@
                         </div>
                         <div class="small text-secondary" th:text="${#temporals.format(reviewDaily.date(), 'MM/dd')}">08/08</div>
                     </td>
-                    <td><strong th:text="${reviewDaily.totalReviewCount()}">0</strong>회</td>
-                    <td><span th:text="${reviewDaily.rememberedRate()}">0</span>%</td>
                     <td>
                         <strong th:text="${quizDaily.solvedQuestionCount()}">0</strong>문제
                         <span class="text-secondary small ms-1">/ <span th:text="${quizDaily.quizAttemptCount()}">0</span>회</span>
                     </td>
                     <td><span th:text="${quizDaily.correctRate()}">0</span>%</td>
+                    <td><strong th:text="${reviewDaily.totalReviewCount()}">0</strong>회</td>
+                    <td><span th:text="${reviewDaily.rememberedRate()}">0</span>%</td>
                     <td class="text-end text-secondary small">
-                        <span th:text="${reviewDaily.rememberedCount()}">0</span> 기억 ·
-                        <span th:text="${quizDaily.correctCount()}">0</span> 정답
+                        <span th:text="${quizDaily.correctCount()}">0</span> 정답 ·
+                        <span th:text="${reviewDaily.rememberedCount()}">0</span> 기억
                     </td>
                 </tr>
                 </tbody>
