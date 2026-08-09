@@ -96,9 +96,9 @@
             </div>
 
             <div class="sub-stat-row mt-3">
+                <span>복습 단어 <strong th:text="${mypage.reviewStatistics().summary().uniqueVocabularyCount()}">0</strong></span>
                 <span>외웠어요 <strong th:text="${mypage.reviewStatistics().summary().rememberedCount()}">0</strong></span>
                 <span>다시 볼래요 <strong th:text="${mypage.reviewStatistics().summary().difficultCount()}">0</strong></span>
-                <span>복습 단어 <strong th:text="${mypage.reviewStatistics().summary().uniqueVocabularyCount()}">0</strong></span>
             </div>
         </article>
     </section>
