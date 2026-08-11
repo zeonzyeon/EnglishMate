@@ -37,18 +37,26 @@ public class WordService {
      */
     public WordUpdateRequest findUpdateRequest(Long memberId, Long wordId) {
         return vocabularyRepository.findByMemberIdAndWordId(memberId, wordId)
-                .map(vocabulary -> new WordUpdateRequest(vocabulary.getMeaning(), vocabulary.getPartOfSpeech()))
-                .orElseGet(() -> new WordUpdateRequest("", ""));
+                .map(vocabulary -> new WordUpdateRequest(vocabulary.getWord().getNormalizedText(), vocabulary.getMeaning(), vocabulary.getPartOfSpeech()))
+                .orElseGet(() -> new WordUpdateRequest("","", ""));
     }
 
     /**
-     * 회원 개인 단어장에 의미/품사를 저장합니다. 단어장 항목이 없으면 먼저 생성합니다.
+     * 회원 개인 단어장에 기본형/의미/품사를 저장합니다. 단어장 항목이 없으면 먼저 생성합니다.
      */
     @Transactional
     public void update(Long memberId, Long wordId, WordUpdateRequest request) {
         Vocabulary vocabulary = vocabularyRepository.findByMemberIdAndWordId(memberId, wordId)
                 .orElseGet(() -> createVocabulary(memberId, wordId));
-        vocabulary.updateMeaningAndPartOfSpeech(request.meaning(), request.partOfSpeech());
+
+        vocabulary.updateMeaningAndPartOfSpeech(
+                request.meaning(),
+                request.partOfSpeech()
+        );
+
+        vocabulary.getWord().updateNormalizedText(
+                request.normalizedText()
+        );
     }
 
     private Vocabulary createVocabulary(Long memberId, Long wordId) {

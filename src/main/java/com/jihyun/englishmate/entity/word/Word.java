@@ -50,4 +50,8 @@ public class Word {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    public void updateNormalizedText(String normalizedText) {
+        this.normalizedText = normalizedText;
+    }
 }

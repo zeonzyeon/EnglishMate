@@ -14,7 +14,7 @@
         <div class="col-12 col-md-8 col-lg-6">
             <div class="mb-4">
                 <h1 class="h3 mb-1">단어 정보 수정</h1>
-                <p class="text-secondary mb-0">단어의 의미와 품사만 수정할 수 있습니다.</p>
+                <p class="text-secondary mb-0">기본형이 잘못된 경우 직접 수정할 수 있습니다.</p>
             </div>
 
             <div class="card border-0 shadow-sm">
@@ -23,9 +23,10 @@
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
                         <div class="mb-3">
-                            <label for="text" class="form-label">기본형</label>
-                            <input type="text" id="text" class="form-control" th:value="${word.normalizedText}" readonly>
+                            <label for="normalizedText" class="form-label">기본형</label>
+                            <input type="text" id="normalizedText" class="form-control" th:field="*{normalizedText}" th:classappend="${#fields.hasErrors('normalizedText')} ? 'is-invalid'" maxlength="255">
                             <div class="form-text" style="color: #dbeafe;">추출 단어: <span th:text="${word.text}">normalized</span></div>
+
                         </div>
 
                         <div class="mb-3">
