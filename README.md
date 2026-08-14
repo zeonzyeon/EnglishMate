@@ -8,6 +8,16 @@ EnglishMate는 사용자가 직접 영어 학습 자료를 입력하면 텍스�
 
 <br>
 
+## AI 활용
+
+본 프로젝트는 개발 과정에서 **OpenAI Codex**를 AI 개발 보조 도구로 활용했습니다.
+
+- 기능 구현 및 코드 작성 과정에서 코드 생성 및 보완
+- 오류 원인 분석 및 디버깅 과정에서 해결 방법 검토
+- 코드 구조 및 구현 방식에 대한 아이디어 검토
+
+<br>
+
 ## 주요 기능
 
 ### 1. 회원가입 / 로그인
@@ -104,7 +114,7 @@ EnglishMate는 사용자가 직접 영어 학습 자료를 입력하면 텍스�
 <img width="2400" alt="My Vocabulary" src="https://github.com/user-attachments/assets/5d4fa7da-1646-44f3-9814-e4108703178c" />
 
 #### 5-2. 단어 정보 수정
-<img width="2400" alt="My Vocabulary" src="https://github.com/user-attachments/assets/44b1a57e-cb69-45bd-b68b-e54de637d14a" />
+<img width="2400" alt="My Vocabulary" src="https://github.com/user-attachments/assets/a0d114c0-df92-4c86-91a0-24309fa29185" />
 
 ### 6. Quiz
 #### 6-1. 퀴즈 유형 및 학습자료 선택
